@@ -6,6 +6,8 @@ char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptio
 char SubstitutionAlphabet(char *substitutionAlphabet);
 char SubstitutionEncryption(char *message, char *substitutionEncryptionMessage);
 
+
+
 int main() {
     int task; //Integer for storing selected task
   /*printf("Select a task: \n");
