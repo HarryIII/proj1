@@ -16,14 +16,15 @@ int main() {
     task = 2; //manually setting task to bypasa input for now.
     char message[13] = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D', '.', '\0'};
     char rotationEncryptionMessage[13] = {'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
-    printf("%s\n", rotationEncryptionMessage);
+    //printf("    Encrypted Message: %s.\n", rotationEncryptionMessage);
+   // printf("%s\n", rotationEncryptionMessage);
     char rotationDecryptionMessage[13] = {};
     switch(task)
     {
         case 1: rotationEncryptionMessage[13] = RotationEncryption(message, rotationEncryptionMessage); 
             printf("    Encryption: %s\n", rotationEncryptionMessage); break;
-        case 2: rotationDecryptionMessage[13] = RotationDecryption(rotationDecryptionMessage, rotationEncryptionMessage); 
-            printf("    Decryption: %s\n", rotationDecryptionMessage); break;
+        case 2: rotationDecryptionMessage[13] = RotationDecryption(rotationEncryptionMessage, rotationDecryptionMessage); 
+            printf("    Decryption: %s\n", rotationDecryptionMessage);
         case 3: break; 
         case 4: break; 
         case 5: break; 
@@ -56,7 +57,7 @@ char RotationEncryption(char *message, char *rotationEncryptionMessage) {
     return *rotationEncryptionMessage;
 }   
 
-//RotationDecrption takes the encrypted message from RotationEncryption and shifts each letter back to it's original meaning.
+//RotationDecrption takes the encrypted message from RotationEncryption and shifts each letter back to it's original value.
 
 
 char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptionMessage) {
@@ -64,7 +65,7 @@ char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptio
     int index;
     printf("Rotation Cipher Decryption:\n");
     printf("    Encrypted Message: %s\n", rotationEncryptionMessage);
-    printf("    Rotation key: %d\n", shift);
+    printf("    Rotation key: %d.\n", shift);
     for(index = 0; index < 13; index++) {
         if(rotationEncryptionMessage[index] < 65 || rotationEncryptionMessage[index] > 90) {    //If the letter is not between A-Z, keep its value
             rotationDecryptionMessage[index] = rotationEncryptionMessage[index];           
