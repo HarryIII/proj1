@@ -70,8 +70,8 @@ char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptio
         if(rotationEncryptionMessage[index] < 65 || rotationEncryptionMessage[index] > 90) {    //If the letter is not between A-Z, keep its value
             rotationDecryptionMessage[index] = rotationEncryptionMessage[index];           
         }
-        else if (rotationEncryptionMessage[index] - shift < 60) {             //If the new value goes past Z, finish rotation from A
-            int difference = 64 - rotationEncryptionMessage[index];
+        else if (rotationEncryptionMessage[index] - shift < 65) {             //If the new value goes past Z, finish rotation from A
+            int difference = 65 - rotationEncryptionMessage[index];
             rotationDecryptionMessage[index] = 90 - difference;
         }
         else {                                              //Add the shift value to rotate each other letter.
