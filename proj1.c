@@ -24,7 +24,7 @@ int main() {
         case 1: rotationEncryptionMessage[13] = RotationEncryption(message, rotationEncryptionMessage); 
             printf("    Encryption: %s\n", rotationEncryptionMessage); break;
         case 2: rotationDecryptionMessage[13] = RotationDecryption(rotationEncryptionMessage, rotationDecryptionMessage); 
-            printf("    Decryption: %s\n", rotationDecryptionMessage);
+            printf("    Decryption: %s\n", rotationDecryptionMessage); break;
         case 3: break; 
         case 4: break; 
         case 5: break; 
@@ -70,9 +70,9 @@ char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptio
         if(rotationEncryptionMessage[index] < 65 || rotationEncryptionMessage[index] > 90) {    //If the letter is not between A-Z, keep its value
             rotationDecryptionMessage[index] = rotationEncryptionMessage[index];           
         }
-        else if (rotationEncryptionMessage[index] - shift < 65) {             //If the new value goes past Z, finish rotation from A
-            int difference = 65 - rotationEncryptionMessage[index];
-            rotationDecryptionMessage[index] = 90 - difference;
+        else if (rotationEncryptionMessage[index] - shift < 65) {             //If the new value is before a A, finish rotation from Z.
+            int difference = 64 - rotationEncryptionMessage[index];
+            rotationDecryptionMessage[index] = 90 + difference;
         }
         else {                                              //Add the shift value to rotate each other letter.
             rotationDecryptionMessage[index] = rotationEncryptionMessage[index] - shift;
