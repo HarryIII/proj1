@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 //rotation cipher test
 char RotationEncryption(char *message, char *rotationEncryptionMessage);
 char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptionMessage);
+char SubstitutionAlphabet(char *substitutionAlphabet);
+char SubstitutionEncryption(char *message, char *substitutionEncryptionMessage);
 
 int main() {
     int task; //Integer for storing selected task
@@ -13,9 +16,13 @@ int main() {
     printf("5. Decryption of a message encrypted with a rotation cipher given cipher text only.\n");
     printf("6. Decryption of a message encrypted with a substitution cipher given cipher text only.\n");
     scanf("%d", &task);*/
-    task = 2; //manually setting task to bypasa input for now.
+    task = 3; //manually setting task to bypass input for now.
     char message[13] = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D', '.', '\0'};
     char rotationEncryptionMessage[13] = {'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
+    char substitutionAlphabet[26] = {};
+    SubstitutionAlphabet(substitutionAlphabet);
+    printf("Substitution Alphabet: %s", substitutionAlphabet);
+    char substitutionEncryptionMessage[13] = {}; 
     //printf("    Encrypted Message: %s.\n", rotationEncryptionMessage);
    // printf("%s\n", rotationEncryptionMessage);
     char rotationDecryptionMessage[13] = {};
@@ -31,6 +38,7 @@ int main() {
         case 6: break;
     }
 }
+
 
 //RotationEncryption takes a string and shifts each character in that string by a roation amount (e.g. 6), ignoring non characters that...
 //...are not letters.
@@ -57,8 +65,8 @@ char RotationEncryption(char *message, char *rotationEncryptionMessage) {
     return *rotationEncryptionMessage;
 }   
 
-//RotationDecrption takes the encrypted message from RotationEncryption and shifts each letter back to it's original value.
 
+//RotationDecrption takes the encrypted message from RotationEncryption and shifts each letter back to it's original value.
 
 char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptionMessage) {
     int shift = 6;
@@ -80,4 +88,40 @@ char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptio
 
     }
     return *rotationDecryptionMessage;
+}
+
+
+//
+
+char alphabet() {
+    
+}
+
+//Generates a random alphabet subsitution.
+
+
+char SubstitutionAlphabet(char *substitutionAlphabet) {
+    srand(time(NULL));
+    int index;
+    int subIndex;
+    for(index = 0; index <27; ++index) {
+        int randomInt = (rand() % 90);
+        if(randomInt < 65) {
+            randomInt = (rand() % 90);
+        }
+        for(subIndex = 0; subIndex < 27; ++subIndex ) { //go through every letter in alphabet so far
+            randomInt = (rand() % 90);
+            if(substitutionAlphabet[subIndex] == randomInt || randomInt < 65) { //letter is found in alphabet
+                randomInt = (rand() % 90);
+            }        
+        }   
+        substitutionAlphabet[index] = randomInt;
+    }
+}
+
+
+//
+
+char SubstitutionEncryption(char *message, char *substitutionEncryptionMessage) {
+    return 0;
 }
