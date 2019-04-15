@@ -9,7 +9,7 @@ char Alphabet(char *alphabet);
 char RotationEncryption(char *message, char *rotationEncryptionMessage);
 char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptionMessage);
 char SubstitutionAlphabet(char *substitutionAlphabet);
-char SubstitutionEncryption(char *message, char *substitutionEncryptionMessage);
+char SubstitutionEncryption(char *message, char *substitutionAlphabet, char *substitutionEncryptionMessage);
 
 
 
@@ -29,8 +29,8 @@ int main() {
     char rotationEncryptionMessage[13] = {'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
     char substitutionAlphabet[27] = {0};
     
-    char substitutionEncryptionMessage[13] = {}; 
-    char rotationDecryptionMessage[13] = {};
+    char substitutionEncryptionMessage[1023] = {}; 
+    char rotationDecryptionMessage[1023] = {};
     
     switch(task)
     {
@@ -39,7 +39,9 @@ int main() {
         case 2: rotationDecryptionMessage[13] = RotationDecryption(rotationEncryptionMessage, rotationDecryptionMessage); 
             printf("    Decryption: %s\n", rotationDecryptionMessage); break;
         case 3: substitutionAlphabet[27] = SubstitutionAlphabet(substitutionAlphabet);
-            printf("Substitution Alphabet: %s\n", substitutionAlphabet); break; 
+            printf("Substitution Alphabet: %s\n", substitutionAlphabet);
+            substitutionEncryptionMessage[1023] = SubstitutionEncryption(message, substitutionAlphabet, substitutionEncryptionMessage); 
+            printf("Substitution Encryption: %s\n", substitutionEncryptionMessage); break; 
         case 4: break; 
         case 5: break; 
         case 6: break;
@@ -120,6 +122,17 @@ char SubstitutionAlphabet(char *substitutionAlphabet) {
 
 //
 
-char SubstitutionEncryption(char *message, char substitutionAlphabet) {
-    
+char SubstitutionEncryption(char *message, char *substitutionAlphabet, char *substitutionEncryptionMessage) {
+    int encrypIndex;
+    int msgIndex, alphabetIndex;
+    for(encrypIndex = 0; encrypIndex < 25; encrypIndex++) {
+        for(msgIndex = 0; msgIndex < 25; msgIndex++) {
+            for(alphabetIndex = 0; alphabetIndex < 25; alphabetIndex++) {
+                if (substitutionAlphabet[alphabetIndex] == message[msgIndex]) {
+                    substitutionEncryptionMessage[encrypIndex] = substitutionAlphabet[alphabetIndex];
+                }
+            }
+        }
+    }
+    return *substitutionEncryptionMessage;
 }
