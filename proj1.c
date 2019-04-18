@@ -128,7 +128,7 @@ char SubstitutionEncryption(char *message, char *substitutionAlphabet, char *sub
     for(msgIndex = 0; msgIndex < 25; msgIndex++) {
         for(abIndex = 0; abIndex < 25; abIndex++) {
             if(message[msgIndex] < 65 || message[msgIndex] > 90) {
-                substitutionEncryptionMessage[msgIndex] == message[msgIndex];
+                substitutionEncryptionMessage[msgIndex] = message[msgIndex];
             }
             else if(message[msgIndex] == alphabet[abIndex]) {
                 substitutionEncryptionMessage[msgIndex] = substitutionAlphabet[abIndex];
