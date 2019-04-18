@@ -44,9 +44,9 @@ int main() {
             printf("Substitution Alphabet: %s\n", subAB);
             printf("             Alphabet: %s\n", alphabet);
             subEncMsg[1023] = SubstitutionEncryption(msg, subAB, subEncMsg, alphabet); 
-            printf("Substitution Encryption: %s\n", subEncMsg); break; 
-             subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAB, subDecMsg, alphabet);
-             printf("Substitution Decryption: %s\n", subDecMsg); break;
+            printf("Substitution Encryption: %s\n", subEncMsg); 
+            subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAB, subDecMsg, alphabet);
+            printf("Substitution Decryption: %s\n", subDecMsg); break;
         case 4: break; 
         case 5: break; 
         case 6: break;
@@ -150,12 +150,12 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
         for(SubEncMsgIndex = 0; SubEncMsgIndex < 25; SubEncMsgIndex++) {
             for(subABIndex = 0; subABIndex < 25; subABIndex++) {
                 if(subEncMsg[SubEncMsgIndex] < 65 || subEncMsg[SubEncMsgIndex] > 90) {
-                    subEncMsg[SubEncMsgIndex] = subDecMsg[SubEncMsgIndex];
+                    subDecMsg[SubEncMsgIndex] = subEncMsg[SubEncMsgIndex];
                 }
-                else if(subEncMsg[SubEncMsgIndex] == alphabet[subABIndex]) {
-                    subEncMsg[SubEncMsgIndex] = alphabet[subABIndex];
+                else if(subEncMsg[SubEncMsgIndex] == subAB[subABIndex]) {
+                    subDecMsg[SubEncMsgIndex] = alphabet[subABIndex];
                 }
             }   
         }
-        return *subEncMsg;
+        return *subDecMsg;
     }
