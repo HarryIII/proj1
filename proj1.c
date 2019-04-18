@@ -30,9 +30,9 @@ int main() {
     char rotEncMsg[13] = {'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
     char subAB[27] = {0};
     
-    char subEncMsg[1023] = {}; 
-    char subDecMsg[1023] = {}; 
-    char rotDecMsg[1023] = {};
+    char subEncMsg[13] = {}; 
+    char subDecMsg[13] = {}; 
+    char rotDecMsg[13] = {};
     
     switch(task)
     {
@@ -166,9 +166,11 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
 char RotationEncryptionKeyless(char *rotEncMsg, char *alphabet) {
     int 1Count, 2Count, 3Count, 4Count, 5Count, 6Count;             //The 6 most common letters (increasing order) are e, t, a, o, i and n.
     int rotDecIndex, ABIndex;                                       //Therefore, counts 1, 2, 3, 4, 5 and 6 correspond to their respective letter comminalities.
-    for(rotDecIndex = 0; rotDecIndex < 1023; rotDecIndex++) {
-        for(alphabet = 0; alphabet < ) {
-            
+    for(ABIndex = 0; ABIndex < 25; ABIndex++) {
+        for(rotDecIndex = 0; rotDecIndex < 13, rotDecIndex++) {                //Change max condition to find sizeof file i/o.
+            if(rotEncMsg[rotDecMsg] == alphabet[ABIndex]) {
+                
+            }
         }
     }
 }
