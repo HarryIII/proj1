@@ -6,43 +6,47 @@
 #include <stdbool.h>
 
 char Alphabet(char *alphabet);
-char RotationEncryption(char *message, char *rotationEncryptionMessage);
-char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptionMessage);
-char SubstitutionAlphabet(char *substitutionAlphabet);
-char SubstitutionEncryption(char *message, char *substitutionAlphabet, char *substitutionEncryptionMessage, char *alphabet);
+char RotationEncryption(char *msg, char *rotEncMsg);
+char RotationDecryption(char *rotEncMsg, char *rotDecMsg);
+char SubstitutionAlphabet(char *subAB);
+char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet);
+char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet);
 
 
 
 int main() {
     int task; //Integer for storing selected task
   /*printf("Select a task: \n");
-    printf("1. Encryption of a message with a rotation cipher given the message text and rotation amount.\n");
+    printf("1. Encryption of a message with a rotation cipher given the msg text and rotation amount.\n");
     printf("2. Decryption of a message encrypted with a rotation cipher given cipher text and rotation amount.\n");
-    printf("3. Encryption of a message with a substitution cipher given message text and alphabet substitution.\n");
+    printf("3. Encryption of a message with a substitution cipher given msg text and alphabet substitution.\n");
     printf("4. Decryption of a message encrypted with a substitution cipher given cipher text and substitutions.\n");
     printf("5. Decryption of a message encrypted with a rotation cipher given cipher text only.\n");
     printf("6. Decryption of a message encrypted with a substitution cipher given cipher text only.\n");
     scanf("%d", &task);*/
     task = 3; //manually setting task to bypass input for now.
     char alphabet[27] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\0'};
-    char message[13] = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D', '.', '\0'};
-    char rotationEncryptionMessage[13] = {'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
-    char substitutionAlphabet[27] = {0};
+    char msg[13] = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D', '.', '\0'};
+    char rotEncMsg[13] = {'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
+    char subAB[27] = {0};
     
-    char substitutionEncryptionMessage[1023] = {}; 
-    char rotationDecryptionMessage[1023] = {};
+    char subEncMsg[1023] = {}; 
+    char subDecMsg[1023] = {}; 
+    char rotDecMsg[1023] = {};
     
     switch(task)
     {
-        case 1: rotationEncryptionMessage[13] = RotationEncryption(message, rotationEncryptionMessage); 
-            printf("    Encryption: %s\n", rotationEncryptionMessage); break;
-        case 2: rotationDecryptionMessage[13] = RotationDecryption(rotationEncryptionMessage, rotationDecryptionMessage); 
-            printf("    Decryption: %s\n", rotationDecryptionMessage); break;
-        case 3: substitutionAlphabet[27] = SubstitutionAlphabet(substitutionAlphabet);
-            printf("Substitution Alphabet: %s\n", substitutionAlphabet);
+        case 1: rotEncMsg[13] = RotationEncryption(msg, rotEncMsg); 
+            printf("    Encryption: %s\n", rotEncMsg); break;
+        case 2: rotDecMsg[13] = RotationDecryption(rotEncMsg, rotDecMsg); 
+            printf("    Decryption: %s\n", rotDecMsg); break;
+        case 3: subAB[27] = SubstitutionAlphabet(subAB);
+            printf("Substitution Alphabet: %s\n", subAB);
             printf("             Alphabet: %s\n", alphabet);
-            substitutionEncryptionMessage[1023] = SubstitutionEncryption(message, substitutionAlphabet, substitutionEncryptionMessage, alphabet); 
-            printf("Substitution Encryption: %s\n", substitutionEncryptionMessage); break; 
+            subEncMsg[1023] = SubstitutionEncryption(msg, subAB, subEncMsg, alphabet); 
+            printf("Substitution Encryption: %s\n", subEncMsg); break; 
+             subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAB, subDecMsg, alphabet);
+             printf("Substitution Decryption: %s\n", subDecMsg); break;
         case 4: break; 
         case 5: break; 
         case 6: break;
@@ -53,87 +57,105 @@ int main() {
 //RotationEncryption takes a string and shifts each character in that string by a roation amount (e.g. 6), ignoring non characters that...
 //...are not letters.
 
-char RotationEncryption(char *message, char *rotationEncryptionMessage) {
+char RotationEncryption(char *msg, char *rotEncMsg) {
     int shift = 6; //Initialising shift amount to 6 places.
     int index; //Declaring string index.
     printf("Rotation Cipher Encryption:\n");
-    printf("    Message: %s\n", message);
+    printf("    msg: %s\n", msg);
     printf("    Rotation key: %d.\n", shift);
     for(index = 0; index < 13; index++) {
-        if(message[index] < 65 || message[index] > 90) {    //If the letter is not between A-Z, keep its value
-            rotationEncryptionMessage[index] = message[index];           
+        if(msg[index] < 65 || msg[index] > 90) {    //If the letter is not between A-Z, keep its value
+            rotEncMsg[index] = msg[index];           
         }
-        else if (message[index] + shift > 90) {             //If the new value goes past Z, finish rotation from A
-            int difference = 90 - message[index];
-            rotationEncryptionMessage[index] = 64 + difference;
+        else if (msg[index] + shift > 90) {             //If the new value goes past Z, finish rotation from A
+            int difference = 90 - msg[index];
+            rotEncMsg[index] = 64 + difference;
         }
         else {                                              //Add the shift value to rotate each other letter.
-            rotationEncryptionMessage[index] = message[index] + shift;
+            rotEncMsg[index] = msg[index] + shift;
         }
 
     }
-    return *rotationEncryptionMessage;
+    return *rotEncMsg;
 }   
 
 
-//RotationDecrption takes the encrypted message from RotationEncryption and shifts each letter back to it's original value.
+//RotationDecrption takes the encrypted msg from RotationEncryption and shifts each letter back to it's original value.
 
-char RotationDecryption(char *rotationEncryptionMessage, char *rotationDecryptionMessage) {
+char RotationDecryption(char *rotEncMsg, char *rotDecMsg) {
     int shift = 6;
     int index;
     printf("Rotation Cipher Decryption:\n");
-    printf("    Encrypted Message: %s\n", rotationEncryptionMessage);
+    printf("    Encrypted msg: %s\n", rotEncMsg);
     printf("    Rotation key: %d.\n", shift);
     for(index = 0; index < 13; index++) {
-        if(rotationEncryptionMessage[index] < 65 || rotationEncryptionMessage[index] > 90) {    //If the letter is not between A-Z, keep its value
-            rotationDecryptionMessage[index] = rotationEncryptionMessage[index];           
+        if(rotEncMsg[index] < 65 || rotEncMsg[index] > 90) {    //If the letter is not between A-Z, keep its value
+            rotDecMsg[index] = rotEncMsg[index];           
         }
-        else if (rotationEncryptionMessage[index] - shift < 65) {             //If the new value is before a A, finish rotation from Z.
-            int difference = 64 - rotationEncryptionMessage[index];
-            rotationDecryptionMessage[index] = 90 + difference;
+        else if (rotEncMsg[index] - shift < 65) {             //If the new value is before a A, finish rotation from Z.
+            int difference = 64 - rotEncMsg[index];
+            rotDecMsg[index] = 90 + difference;
         }
         else {                                              //Add the shift value to rotate each other letter.
-            rotationDecryptionMessage[index] = rotationEncryptionMessage[index] - shift;
+            rotDecMsg[index] = rotEncMsg[index] - shift;
         }
 
     }
-    return *rotationDecryptionMessage;
+    return *rotDecMsg;
 }
 
 
 //Generates a random alphabet subsitution.
 
-char SubstitutionAlphabet(char *substitutionAlphabet) {
+char SubstitutionAlphabet(char *subAB) {
     int n=26, i, k;
     bool arr[100]={0};
     srand(time(NULL));
     for(i=0; i<n; ++i) {
         int rNum = rand() % (90 + 1 - 65) + 65;
     if(!arr[rNum]) {
-      substitutionAlphabet[i] = rNum;
+      subAB[i] = rNum;
     }
     else {
       i--;
     }
     arr[rNum]=1;    
   }
-    return *substitutionAlphabet;
+    return *subAB;
 }
 
 
 //
 
-char SubstitutionEncryption(char *message, char *substitutionAlphabet, char *substitutionEncryptionMessage, char *alphabet) {
+char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet) {
     int msgIndex, abIndex;
     for(msgIndex = 0; msgIndex < 25; msgIndex++) {
         for(abIndex = 0; abIndex < 25; abIndex++) {
-            if(message[msgIndex] < 65 || message[msgIndex] > 90) {
-                substitutionEncryptionMessage[msgIndex] = message[msgIndex];
+            if(msg[msgIndex] < 65 || msg[msgIndex] > 90) {
+                subEncMsg[msgIndex] = msg[msgIndex];
             }
-            else if(message[msgIndex] == alphabet[abIndex]) {
-                substitutionEncryptionMessage[msgIndex] = substitutionAlphabet[abIndex];
+            else if(msg[msgIndex] == alphabet[abIndex]) {
+                subEncMsg[msgIndex] = subAB[abIndex];
             }
         }   
     }
-    return *substitutionEncryptionMessage;
+    return *subEncMsg;
 }   
+
+
+//
+
+char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet) {
+    int SubEncMsgIndex, subABIndex;
+        for(SubEncMsgIndex = 0; SubEncMsgIndex < 25; SubEncMsgIndex++) {
+            for(subABIndex = 0; subABIndex < 25; subABIndex++) {
+                if(subEncMsg[SubEncMsgIndex] < 65 || subEncMsg[SubEncMsgIndex] > 90) {
+                    subEncMsg[SubEncMsgIndex] = subDecMsg[SubEncMsgIndex];
+                }
+                else if(subEncMsg[SubEncMsgIndex] == alphabet[subABIndex]) {
+                    subEncMsg[SubEncMsgIndex] = alphabet[subABIndex];
+                }
+            }   
+        }
+        return *subEncMsg;
+    }
