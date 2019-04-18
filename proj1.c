@@ -166,7 +166,9 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
 char RotationEncryptionKeyless(char *rotEncMsg, char *alphabet) {
     int 1Count, 2Count, 3Count, 4Count, 5Count, 6Count;             //The 6 most common letters (increasing order) are e, t, a, o, i and n.
     int rotDecIndex, ABIndex;                                       //Therefore, counts 1, 2, 3, 4, 5 and 6 correspond to their respective letter comminalities.
-    for(rotDecIndex = 0; rotDecIndex <) {
-
+    for(rotDecIndex = 0; rotDecIndex < 1023; rotDecIndex++) {
+        for(alphabet = 0; alphabet < ) {
+            
+        }
     }
 }
