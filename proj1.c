@@ -11,7 +11,7 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg);
 char SubstitutionAlphabet(char *subAB);
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet);
 char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet);
-char RotationDecryptionKeyless(char *rotEncMsg);
+char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl);
 
 
 
@@ -25,14 +25,15 @@ int main() {
     printf("5. Decryption of a message encrypted with a rotation cipher given cipher text only.\n");
     printf("6. Decryption of a message encrypted with a substitution cipher given cipher text only.\n");
     scanf("%d", &task);*/
-    task = 3; //manually setting task to bypass input for now.
+    task = 4; //manually setting task to bypass input for now.
     char alphabet[27] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\0'};
     char msg[13] = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D', '.', '\0'};
     char rotEncMsg[13] = {'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
     char subAB[27] = {0};
     
     char subEncMsg[13] = {}; 
-    char subDecMsg[13] = {}; 
+    char subDecMsg[13] = {};
+    char subDecMsgKl[13] = {};
     char rotDecMsg[13] = {};
     char rotDecMsgKl[13] = {};
     
@@ -52,7 +53,8 @@ int main() {
             
         case 4: rotEncMsg[13] = RotationEncryption(msg, rotEncMsg); 
             printf("    Encryption: %s\n", rotEncMsg);        
-            RotationEncryptionKeyless(rotEncMsg); break;
+            rotDecMsg[13] = RotationDecryptionKeyless(rotEncMsg, rotDecMsgKl); 
+            printf("    Decryption: %s\n", rotDecMsg); break;
         case 5: break; 
         case 6: break;
     }
@@ -167,16 +169,17 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
     
 //
     
-char RotationDecryptionKeyless(char *rotEncMsg) {
+char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl) {
     int shift, index;
     int msgLen = sizeof(rotEncMsg);
-    for(shift = 1; shift < 27; shift++) {
+    int returnFromDictionaryCheck = 1;
+    for(shift = 1; shift < 26; shift++) {
         for(index = 0; index < msgLen + 1; index++) {
             if(rotEncMsg[index] < 65 || rotEncMsg[index] > 90) {    //If the letter is not between A-Z, keep its value
             rotDecMsgKl[index] = rotEncMsg[index];           
             }
-            else if (msg[index] + shift > 90) {             //If the new value goes past Z, finish rotation from A
-                int difference = 90 - msg[index];
+            else if (rotEncMsg[index] + shift > 90) {             //If the new value goes past Z, finish rotation from A
+                int difference = 90 - rotEncMsg[index];
                 rotDecMsgKl[index] = 64 + difference;
             }
             else {                                              //Add the shift value to rotate each other letter.
@@ -185,8 +188,8 @@ char RotationDecryptionKeyless(char *rotEncMsg) {
         }
         //DictionaryCheck(); complete spell check with dictionary
         if(returnFromDictionaryCheck == 1) {                                                  //If this iteration of shift amount matches a dictionary word (change variable name)
-                
-        }                                   
+            break;
+        }
     }
     return *rotDecMsgKl;
 }
