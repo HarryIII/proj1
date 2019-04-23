@@ -11,6 +11,7 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg);
 char SubstitutionAlphabet(char *subAB);
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet);
 char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet);
+char RotationDecryptionKeyless(char *rotEncMsg);
 
 
 
@@ -33,6 +34,7 @@ int main() {
     char subEncMsg[13] = {}; 
     char subDecMsg[13] = {}; 
     char rotDecMsg[13] = {};
+    char rotDecMsgKl[13] = {};
     
     switch(task)
     {
@@ -47,7 +49,10 @@ int main() {
             printf("Substitution Encryption: %s\n", subEncMsg); 
             subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAB, subDecMsg, alphabet);
             printf("Substitution Decryption: %s\n", subDecMsg); break;
-        case 4: break; 
+            
+        case 4: rotEncMsg[13] = RotationEncryption(msg, rotEncMsg); 
+            printf("    Encryption: %s\n", rotEncMsg);        
+            RotationEncryptionKeyless(rotEncMsg); break;
         case 5: break; 
         case 6: break;
     }
@@ -61,7 +66,7 @@ char RotationEncryption(char *msg, char *rotEncMsg) {
     int shift = 6; //Initialising shift amount to 6 places.
     int index; //Declaring string index.
     printf("Rotation Cipher Encryption:\n");
-    printf("    msg: %s\n", msg);
+    printf("    Message: %s\n", msg);
     printf("    Rotation key: %d.\n", shift);
     for(index = 0; index < 13; index++) {
         if(msg[index] < 65 || msg[index] > 90) {    //If the letter is not between A-Z, keep its value
@@ -159,18 +164,29 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
         }
         return *subDecMsg;
     }
-
-
+    
 //
-
-char RotationEncryptionKeyless(char *rotEncMsg, char *alphabet) {
-    int 1Count, 2Count, 3Count, 4Count, 5Count, 6Count;             //The 6 most common letters (increasing order) are e, t, a, o, i and n.
-    int rotDecIndex, ABIndex;                                       //Therefore, counts 1, 2, 3, 4, 5 and 6 correspond to their respective letter comminalities.
-    for(ABIndex = 0; ABIndex < 25; ABIndex++) {
-        for(rotDecIndex = 0; rotDecIndex < 13, rotDecIndex++) {                //Change max condition to find sizeof file i/o.
-            if(rotEncMsg[rotDecMsg] == alphabet[ABIndex]) {
-                
+    
+char RotationDecryptionKeyless(char *rotEncMsg) {
+    int shift, index;
+    int msgLen = sizeof(rotEncMsg);
+    for(shift = 1; shift < 27; shift++) {
+        for(index = 0; index < msgLen + 1; index++) {
+            if(rotEncMsg[index] < 65 || rotEncMsg[index] > 90) {    //If the letter is not between A-Z, keep its value
+            rotDecMsgKl[index] = rotEncMsg[index];           
+            }
+            else if (msg[index] + shift > 90) {             //If the new value goes past Z, finish rotation from A
+                int difference = 90 - msg[index];
+                rotDecMsgKl[index] = 64 + difference;
+            }
+            else {                                              //Add the shift value to rotate each other letter.
+                rotDecMsgKl[index] = rotEncMsg[index] + shift;
             }
         }
+        //DictionaryCheck(); complete spell check with dictionary
+        if(returnFromDictionaryCheck == 1) {                                                  //If this iteration of shift amount matches a dictionary word (change variable name)
+                
+        }                                   
     }
+    return *rotDecMsgKl;
 }
