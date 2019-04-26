@@ -26,8 +26,9 @@ int main() {
     printf("6. Decryption of a message encrypted with a substitution cipher given cipher text only.\n");
     scanf("%d", &task);*/
     task = 1; //manually setting task to bypass input for now.
+    char commonLetters[6] = {'E', 'T', 'A', 'O', 'I', 'N', '\0'};
     char alphabet[27] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\0'};
-    char msg[1023] = "EVERYBODY IS STUPID. FISH CAN'T CLIMB TREES; THEY ARE COMPLETE IDIOTS. - HARRY FLYNN";
+    char msg[1023] = "The quick brown fox jumps over a lazy dog.";
     char rotEncMsg[1023] = {};
     char subAB[27] = {0};
     int shift = 8;
@@ -74,8 +75,8 @@ int main() {
 char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
     int index; //Declaring string index.
     for(index = 0; index < 1023; index++) {
-        if(rotEncMsg[index] < 122 &&  rotEncMsg[index] > 97) {
-            rotEncMsg[index] = rotEncMsg[index] - 32;
+        if(msg[index] > 96 && msg[index] < 123) {
+            msg[index] = msg[index] - 32;
         }
     }
     for(index = 0; index < 1023; index++) {
@@ -101,7 +102,7 @@ char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
 char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift) {
     int index;
     for(index = 0; index < 512; index++) {
-        if(rotEncMsg[index] < 122 &&  rotEncMsg[index] > 97) {
+        if(rotEncMsg[index] > 96 && rotEncMsg[index] < 123) {
             rotEncMsg[index] = rotEncMsg[index] - 32;
         }
     }
@@ -205,7 +206,13 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
         }
     }
     int KLShift = 14;
-    //int KLShift = abs(69 - greatest);
+    
+    //int eShift = abs(69 - greatest);
+    //int tShift = abs(69 - greatest);
+    //int aShift = abs(69 - greatest);      //Use array instead of these and implement algorithm in a for loop to find shift amount
+    //int oShift = abs(69 - greatest);
+    //int iShift = abs(69 - greatest);
+    //int nShift = abs(69 - greatest);
     
     for(REMIndex = 0; REMIndex < 512; REMIndex++) {
         if(rotEncMsg[REMIndex] < 65 || rotEncMsg[REMIndex] > 90) {    //If the letter is not between A-Z, keep its value
