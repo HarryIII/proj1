@@ -205,14 +205,3 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
     } 
     return *rotDecMsgKl;
 }
-
-
-
-        
-        
-        
-        
-        
-        
-        
-        
