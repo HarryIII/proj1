@@ -11,7 +11,7 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg);
 char SubstitutionAlphabet(char *subAB);
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet);
 char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet);
-char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl);
+char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet);
 
 
 
@@ -53,8 +53,8 @@ int main() {
             
         case 4: rotEncMsg[13] = RotationEncryption(msg, rotEncMsg); 
             printf("    Encryption: %s\n", rotEncMsg);        
-            rotDecMsg[13] = RotationDecryptionKeyless(rotEncMsg, rotDecMsgKl); 
-            printf("    Decryption: %s\n", rotDecMsg); break;
+            rotDecMsg[13] = RotationDecryptionKeyless(rotEncMsg, rotDecMsgKl, alphabet); 
+            printf("    Decryption: %s\n", rotDecMsgKl); break;
         case 5: break; 
         case 6: break;
     }
@@ -169,27 +169,50 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
     
 //
     
-char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl) {
-    int shift, index;
+char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet) {
+    char rotAlphabet[26] = {};
+    int ABIndex, REMIndex, rotABIndex, rotABIndexM1;
+    char greatest;
     int msgLen = sizeof(rotEncMsg);
-    int returnFromDictionaryCheck = 1;
-    for(shift = 1; shift < 26; shift++) {
-        for(index = 0; index < msgLen + 1; index++) {
-            if(rotEncMsg[index] < 65 || rotEncMsg[index] > 90) {    //If the letter is not between A-Z, keep its value
-            rotDecMsgKl[index] = rotEncMsg[index];           
+    for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {
+        for(ABIndex = 0; ABIndex < 25; ABIndex++) {
+            if(rotEncMsg[REMIndex] == alphabet[ABIndex]) {
+                rotAlphabet[ABIndex]++;
             }
-            else if (rotEncMsg[index] + shift > 90) {             //If the new value goes past Z, finish rotation from A
-                int difference = 90 - rotEncMsg[index];
-                rotDecMsgKl[index] = 64 + difference;
-            }
-            else {                                              //Add the shift value to rotate each other letter.
-                rotDecMsgKl[index] = rotEncMsg[index] + shift;
-            }
-        }
-        //DictionaryCheck(); complete spell check with dictionary
-        if(returnFromDictionaryCheck == 1) {                                                  //If this iteration of shift amount matches a dictionary word (change variable name)
-            break;
         }
     }
+    for(rotABIndex = 1; rotABIndex < 25; rotABIndex++) {
+        rotABIndexM1 = rotABIndex - 1;
+        if(rotAlphabet[rotABIndex] >= rotAlphabet[rotABIndexM1]) {
+            greatest = rotAlphabet[rotABIndex];
+        }
+        else {
+            greatest = greatest;
+        }
+    }
+    int shift = abs('E' - greatest);
+    for(REMIndex = 0; REMIndex < 13; REMIndex++) {
+            if(rotEncMsg[REMIndex] < 65 || rotEncMsg[REMIndex] > 90) {    //If the letter is not between A-Z, keep its value
+            rotDecMsgKl[REMIndex] = rotEncMsg[REMIndex];           
+        }
+        else if (rotEncMsg[REMIndex] - shift < 65) {             //If the new value is before a A, finish rotation from Z.
+            int difference = 64 - rotEncMsg[REMIndex];
+            rotDecMsgKl[REMIndex] = 90 + difference;
+        }
+        else {                                              //Add the shift value to rotate each other letter.
+            rotDecMsgKl[REMIndex] = rotEncMsg[REMIndex] - shift;
+        }
+    } 
     return *rotDecMsgKl;
 }
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        
