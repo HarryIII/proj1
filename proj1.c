@@ -6,8 +6,8 @@
 #include <stdbool.h>
 
 char Alphabet(char *alphabet);
-char RotationEncryption(char *msg, char *rotEncMsg);
-char RotationDecryption(char *rotEncMsg, char *rotDecMsg);
+char RotationEncryption(char *msg, char *rotEncMsg, int shift);
+char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift);
 char SubstitutionAlphabet(char *subAB);
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet);
 char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet);
@@ -25,13 +25,12 @@ int main() {
     printf("5. Decryption of a message encrypted with a rotation cipher given cipher text only.\n");
     printf("6. Decryption of a message encrypted with a substitution cipher given cipher text only.\n");
     scanf("%d", &task);*/
-    task = 2; //manually setting task to bypass input for now.
+    task = 1; //manually setting task to bypass input for now.
     char alphabet[27] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\0'};
-    char msg[13] = "Hello World";
-    char rotEncMsg[154] = "SJSFMPCRM WG O USBWIG. PIH WT MCI XIRUS O TWGV PM WHG OPWZWHM HC QZWAP O HFSS, WH KWZZ ZWJS WHG KVCZS ZWTS PSZWSJWBU HVOH WH WG GHIDWR. - OZPSFH SWBGHSWB";
-    //{'N', 'K', 'R', 'R', 'U', ' ', 'C', 'U', 'X', 'R', 'J', '.', '\0'};
+    char msg[1023] = "EVERYBODY IS STUPID. FISH CAN'T CLIMB TREES; THEY ARE COMPLETE IDIOTS. - HARRY FLYNN";
+    char rotEncMsg[1023] = {};
     char subAB[27] = {0};
-    
+    int shift = 8;
     char subEncMsg[13] = {}; 
     char subDecMsg[13] = {};
     char subDecMsgKl[13] = {};
@@ -40,9 +39,16 @@ int main() {
     
     switch(task)
     {
-        case 1: rotEncMsg[13] = RotationEncryption(msg, rotEncMsg); 
+        case 1: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, shift);
+            printf("Rotation Cipher Encryption:\n");
+            printf("    Message: %s\n", msg);
+            printf("    Rotation key: %d.\n", shift);
             printf("    Encryption: %s\n", rotEncMsg); break;
-        case 2: rotDecMsg[13] = RotationDecryption(rotEncMsg, rotDecMsg); 
+        case 2: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, shift);
+            rotDecMsg[1023] = RotationDecryption(rotEncMsg, rotDecMsg, shift);
+            printf("Rotation Cipher Decryption:\n");
+            printf("    Encrypted Message: %s\n", rotEncMsg);
+            printf("    Rotation key: %d.\n", shift);
             printf("    Decryption: %s\n", rotDecMsg); break;
         case 3: subAB[27] = SubstitutionAlphabet(subAB);
             printf("Substitution Alphabet: %s\n", subAB);
@@ -62,22 +68,24 @@ int main() {
 }
 
 
-//RotationEncryption takes a string and shifts each character in that string by a roation amount (e.g. 6), ignoring non characters that...
+//RotationEncryption takes a string and shifts each character in that string by a roation amount (e.g. 6), ignoring characters that...
 //...are not letters.
 
-char RotationEncryption(char *msg, char *rotEncMsg) {
-    int shift = 6; //Initialising shift amount to 6 places.
+char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
     int index; //Declaring string index.
-    printf("Rotation Cipher Encryption:\n");
-    printf("    Message: %s\n", msg);
-    printf("    Rotation key: %d.\n", shift);
-    for(index = 0; index < 13; index++) {
+    for(index = 0; index < 1023; index++) {
+        if(rotEncMsg[index] < 122 &&  rotEncMsg[index] > 97) {
+            rotEncMsg[index] = rotEncMsg[index] - 32;
+        }
+    }
+    for(index = 0; index < 1023; index++) {
         if(msg[index] < 65 || msg[index] > 90) {    //If the letter is not between A-Z, keep its value
             rotEncMsg[index] = msg[index];           
         }
         else if (msg[index] + shift > 90) {             //If the new value goes past Z, finish rotation from A
             int difference = 90 - msg[index];
-            rotEncMsg[index] = 64 + difference;
+            int newShift = abs(shift - difference);
+            rotEncMsg[index] = 64 + newShift;
         }
         else {                                              //Add the shift value to rotate each other letter.
             rotEncMsg[index] = msg[index] + shift;
@@ -90,24 +98,25 @@ char RotationEncryption(char *msg, char *rotEncMsg) {
 
 //RotationDecrption takes the encrypted msg from RotationEncryption and shifts each letter back to it's original value.
 
-char RotationDecryption(char *rotEncMsg, char *rotDecMsg) {
-    int shift = 14;
+char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift) {
     int index;
-    printf("Rotation Cipher Decryption:\n");
-    printf("    Encrypted msg: %s\n", rotEncMsg);
-    printf("    Rotation key: %d.\n", shift);
+    for(index = 0; index < 512; index++) {
+        if(rotEncMsg[index] < 122 &&  rotEncMsg[index] > 97) {
+            rotEncMsg[index] = rotEncMsg[index] - 32;
+        }
+    }
     for(index = 0; index < 154; index++) {
         if(rotEncMsg[index] < 65 || rotEncMsg[index] > 90) {    //If the letter is not between A-Z, keep its value
             rotDecMsg[index] = rotEncMsg[index];           
         }
         else if (rotEncMsg[index] - shift < 65) {             //If the new value is before a A, finish rotation from Z.
-            int difference = 64 - rotEncMsg[index];
-            rotDecMsg[index] = 90 + difference;
+            int difference = abs(64 - rotEncMsg[index]);
+            int newShift = shift - difference;
+            rotDecMsg[index] = 90 - newShift;
         }
         else {                                              //Add the shift value to rotate each other letter.
             rotDecMsg[index] = rotEncMsg[index] - shift;
         }
-
     }
     return *rotDecMsg;
 }
@@ -195,19 +204,19 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
             greatest = greatest;
         }
     }
-    int shift = 14;
-    //int shift = abs(69 - greatest);
+    int KLShift = 14;
+    //int KLShift = abs(69 - greatest);
     
     for(REMIndex = 0; REMIndex < 512; REMIndex++) {
         if(rotEncMsg[REMIndex] < 65 || rotEncMsg[REMIndex] > 90) {    //If the letter is not between A-Z, keep its value
             rotDecMsgKl[REMIndex] = rotEncMsg[REMIndex];           
         }
-        else if (rotEncMsg[REMIndex] - shift < 65) {             //If the new value is before a A, finish rotation from Z.
+        else if (rotEncMsg[REMIndex] - KLShift < 65) {             //If the new value is before a A, finish rotation from Z.
             int difference = abs(64 - rotEncMsg[REMIndex]);
             rotDecMsgKl[REMIndex] = 90 - difference;
         }
         else {                                              //Add the shift value to rotate each other letter.
-            rotDecMsgKl[REMIndex] = rotEncMsg[REMIndex] - shift;
+            rotDecMsgKl[REMIndex] = rotEncMsg[REMIndex] - KLShift;
         }
     }
     printf("    Greatest = %d\n", greatest);
