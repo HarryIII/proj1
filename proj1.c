@@ -1,3 +1,20 @@
+/* Program Description:
+ *      asdfasdfasdf 
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+/* Setup:
+ *      asdfasdfasdf
+ * 
+ * 
+ * 
+ * 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -14,6 +31,11 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
 //char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet);
 
 
+/*  Main Function:
+ *      asdfasdfasdf
+ * 
+ * 
+ */
 
 int main() {
     int task; //Integer for storing selected task
@@ -37,7 +59,9 @@ int main() {
     char subDecMsgKl[1023] = {};
     char rotDecMsg[1023] = {};
     char rotDecMsgKl[1023] = {};
+    
     subAB[27] = SubstitutionAlphabet(subAB); //Randomly generating a substitution at the beginnning, so it can be used independant of the case of encryption followed by decryption by subsitution.
+    
     task = 3; //manually setting task to bypass input for now.
     switch(task)
     {
@@ -139,16 +163,16 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift) {
  */
 
 char SubstitutionAlphabet(char *subAB) {
-    int index;                                     //Declaring string index.
+    int abIndex;                                  //Declaring Alphabet Index.
     bool check[100]={0};                           //Boolean array (size is arbitrary) to serve later for reference as to whether or not that position has been used.
     srand(time(NULL));                             //Generates a "random" seed based on computer's internal clock.
-    for(index = 0; index < 26; ++index) {          //For loop for generating the random positions for each letter.
+    for(abIndex = 0; abIndex < 26; ++abIndex) {          //For loop for generating the random positions for each letter.
         int rNum = rand() % (90 + 1 - 65) + 65;    //Generating a random integer between 90 and 65.
         if(!check[rNum]) {                         //If statement to check if alphabet position is not already taken, using that position where true. 
-          subAB[index] = rNum;
+          subAB[abIndex] = rNum;
         }
         else {                                     //Else statement that sets index back by a value of 1 so the program can re-try a new postion for that letter.
-            index--;
+            abIndex--;
         }
         check[rNum] = 1;                           //Sets the value at that index to 1, indicating that the position at this index is taken.
     }
@@ -165,7 +189,7 @@ char SubstitutionAlphabet(char *subAB) {
  */
 
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet) {
-    int msgIndex, abIndex, msgLen = 1023;                                                 //Declaring message and alphabet index. Initialising message length.
+    int msgIndex, abIndex, msgLen = 1023;                                                 //Declaring Message and Alphabet index. Initialising message length.
     for(msgIndex = 0; msgIndex < msgLen; msgIndex++) {                                    //For loop goes through each character to check if it is lower-case and converts any instances 
         if(msg[msgIndex] > 96 && msg[msgIndex] < 123) {                                   //... into upper-case letters. 
             msg[msgIndex] = msg[msgIndex] - 32;                                           
@@ -193,23 +217,23 @@ char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alpha
  */
 
 char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet) {
-    int SubEncMsgIndex, subABIndex, msgLen = 1023;
-    for(SubEncMsgIndex = 0; SubEncMsgIndex < msgLen; SubEncMsgIndex++) {
-        if(subEncMsg[SubEncMsgIndex] > 96 && subEncMsg[SubEncMsgIndex] < 123) {
+    int SubEncMsgIndex, subABIndex, msgLen = 1023;                                               //Declaring Substitution Encryption Message and Substitution Alphabet indices. Initialising Message Length.
+    for(SubEncMsgIndex = 0; SubEncMsgIndex < msgLen; SubEncMsgIndex++) {                         
+        if(subEncMsg[SubEncMsgIndex] > 96 && subEncMsg[SubEncMsgIndex] < 123) {                  
             subEncMsg[SubEncMsgIndex] = subEncMsg[SubEncMsgIndex] - 32;
         }
     }
-    for(SubEncMsgIndex = 0; SubEncMsgIndex < msgLen; SubEncMsgIndex++) {
-           for(subABIndex = 0; subABIndex < 26; subABIndex++) {
-               if(subEncMsg[SubEncMsgIndex] < 65 || subEncMsg[SubEncMsgIndex] > 90) {
-                   subDecMsg[SubEncMsgIndex] = subEncMsg[SubEncMsgIndex];
+    for(SubEncMsgIndex = 0; SubEncMsgIndex < msgLen; SubEncMsgIndex++) {                         //For loop for substitution decryption. Goes through each character of the encrypted message.
+           for(subABIndex = 0; subABIndex < 26; subABIndex++) {                                  //... For each encrypted message character, each character of substitution alphabet is compared to later test if it matches.
+               if(subEncMsg[SubEncMsgIndex] < 65 || subEncMsg[SubEncMsgIndex] > 90) {            //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
+                   subDecMsg[SubEncMsgIndex] = subEncMsg[SubEncMsgIndex];                        //... where true.
                }
-               else if(subEncMsg[SubEncMsgIndex] == subAB[subABIndex]) {
-                   subDecMsg[SubEncMsgIndex] = alphabet[subABIndex];
+               else if(subEncMsg[SubEncMsgIndex] == subAB[subABIndex]) {                         //Else If statement checks if encrypted message character matches substitution alphabet character.
+                   subDecMsg[SubEncMsgIndex] = alphabet[subABIndex];                             //... Where true, message character is replaced with substitution alphabet character.
                }
            }   
        }
-       return *subDecMsg;
+       return *subDecMsg;                                                                        //Returns the message, decrypted by the substitution cipher, to the string 'subDecMsg'.
 }
     
 //
