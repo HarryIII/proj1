@@ -71,8 +71,8 @@ int main() {
 
 /* Rotation Encryption:
  *      The rotation encryption function takes a string and a shift amount (rotation key). This function rotates every upper-case letter in the string
- *      by the rotation key, so every encrypted character is offset by the same number of letters. Before doing so, however, the function converts 
- *      any character that is lower-case into an upper-case so that the function is not case-sensitive. This function only encrypts English letters and
+ *      by the rotation key, so every encrypted character is offset by the same number of letters. Before doing so however, the function converts 
+ *      any character that is lower-case into upper-case so that the function is not case-sensitive. This function only encrypts English letters and
  *      leaves any special characters in the string as they were in the original message.
  *      The encrypted message is returned to the string 'rotEncMsg'.
  */
@@ -104,7 +104,7 @@ char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
 
 /* Rotation Decrption: 
  *      The rotation decryption function takes an encrypted message (possibly from RotationEncryption) and shifts each letter back to it's original value with
- *      the same rotation key given. Like the rotation encryption function, this function converts any lower-case letters into upper case and ignores special
+ *      the same rotation key given. Similar to the rotation encryption function, this function converts any lower-case letters into upper case and ignores special
  *      or foreign characters (i.e. they retain their original value).
  *      The decrypted message is returned to the string 'rotDecMsg'.
  */
@@ -156,30 +156,41 @@ char SubstitutionAlphabet(char *subAB) {
 }
 
 
-//
+/* Substitution Encryption:
+ *      This function uses the previously generated substitution alphabet to replace every upper-case letter in the message 
+ *      with the corresponding letter (found at the same index) in the substitution alphabet. Before doing so however, the function converts 
+ *      any character that is lower-case into upper-case so that the function is not case-sensitive. This function only encrypts English letters and
+ *      leaves any special characters in the string as they were in the original message.
+ *      The encrypted message is returned to the string 'subEncMsg'.
+ */
 
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet) {
-    int msgIndex, abIndex, msgLen = 1023;
-    for(msgIndex = 0; msgIndex < msgLen; msgIndex++) {
-        if(msg[msgIndex] > 96 && msg[msgIndex] < 123) {
-            msg[msgIndex] = msg[msgIndex] - 32;
+    int msgIndex, abIndex, msgLen = 1023;                                                 //Declaring message and alphabet index. Initialising message length.
+    for(msgIndex = 0; msgIndex < msgLen; msgIndex++) {                                    //For loop goes through each character to check if it is lower-case and converts any instances 
+        if(msg[msgIndex] > 96 && msg[msgIndex] < 123) {                                   //... into upper-case letters. 
+            msg[msgIndex] = msg[msgIndex] - 32;                                           
         }
     }
-    for(msgIndex = 0; msgIndex < msgLen; msgIndex++) {
-        for(abIndex = 0; abIndex < 26; abIndex++) {
-            if(msg[msgIndex] < 65 || msg[msgIndex] > 90) {
-                subEncMsg[msgIndex] = msg[msgIndex];
+    for(msgIndex = 0; msgIndex < msgLen; msgIndex++) {                                    //For loop for substitution encryption. Goes through each character of the message.
+        for(abIndex = 0; abIndex < 26; abIndex++) {                                       //... For each message character, each character of alphabet is compared to later test if it matches.
+            if(msg[msgIndex] < 65 || msg[msgIndex] > 90) {                                //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
+                subEncMsg[msgIndex] = msg[msgIndex];                                      //... where true.
             }
-            else if(msg[msgIndex] == alphabet[abIndex]) {
-                subEncMsg[msgIndex] = subAB[abIndex];
+            else if(msg[msgIndex] == alphabet[abIndex]) {                                 //Else If statement checks if message character matches alphabet character. 
+                subEncMsg[msgIndex] = subAB[abIndex];                                     //... Where true, message character is replaced with substitution alphabet character.
             }
         }   
     }
-    return *subEncMsg;
+    return *subEncMsg;                                                                    //Returns the message, encrypted by the substitution cipher, to the string 'subEncMsg'.
 }   
 
 
-//
+/* Substitution Decryption.
+ *      The substitution decryption function takes an encrypted message (possibly from SubstitutionEncryption) and replaces each letter back to it's original value with
+ *      the same same substitution alphabet given. Similar to the substitution encryption function, this function converts any lower-case letters into upper case and ignores special
+ *      or foreign characters (i.e. they retain their original value).
+ *      The decrypted message is returned to the string 'subDecMsg'.
+ */
 
 char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet) {
     int SubEncMsgIndex, subABIndex, msgLen = 1023;
