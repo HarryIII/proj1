@@ -34,7 +34,6 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
 /*  Main Function:
  *      asdfasdfasdf
  * 
- * 
  */
 
 int main() {
