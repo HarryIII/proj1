@@ -101,29 +101,33 @@ char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
 }   
 
 
-//RotationDecrption takes the encrypted msg from RotationEncryption and shifts each letter back to it's original value.
+/* Rotation Decrption: 
+ *      The rotation decryption function takes an encrypted message (possibly from RotationEncryption) and shifts each letter back to it's original value with
+ *      the same rotation key given. Like the rotation encryption function, this function converts any lower-case letters into upper case and ignores special
+ *      or foreign characters (i.e. they retain their original value).
+ */
 
 char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift) {
-    int index, msgLen = 1023;
-    for(index = 0; index < msgLen; index++) {
-        if(rotEncMsg[index] > 96 && rotEncMsg[index] < 123) {
+    int index, msgLen = 1023;                                             //Declaring string index and initialising the length of the message (an arbitrary number).
+    for(index = 0; index < msgLen; index++) {                             //For loop goes through each character to check if it is lower-case and converts any instances  
+        if(rotEncMsg[index] > 96 && rotEncMsg[index] < 123) {             //... into upper-case letters.
             rotEncMsg[index] = rotEncMsg[index] - 32;
         }
     }
-    for(index = 0; index < 154; index++) {
-        if(rotEncMsg[index] < 65 || rotEncMsg[index] > 90) {    //If the letter is not between A-Z, keep its value
-            rotDecMsg[index] = rotEncMsg[index];           
+    for(index = 0; index < msgLen; index++) {                             //For loop for rotation decryption.
+        if(rotEncMsg[index] < 65 || rotEncMsg[index] > 90) {              //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
+            rotDecMsg[index] = rotEncMsg[index];                          //... there is a positive instance.
         }
-        else if (rotEncMsg[index] - shift < 65) {             //If the new value is before a A, finish rotation from Z.
-            int difference = abs(64 - rotEncMsg[index]);
+        else if (rotEncMsg[index] - shift < 65) {                         //If statement to check if the new value (after rotation) goes past A, and to continue rotation from Z
+            int difference = abs(64 - rotEncMsg[index]);                  //... where true.
             int contShift = shift - difference;
             rotDecMsg[index] = 90 - contShift;
         }
-        else {                                              //Add the shift value to rotate each other letter.
+        else {                                                            //Else statement to add the rotation amount to any other character (upper-case letters).
             rotDecMsg[index] = rotEncMsg[index] - shift;
         }
     }
-    return *rotDecMsg;
+    return *rotDecMsg;                                                    //Returns the message Decrypted by the rotation cipher to the string 'rotDecMsg'.
 }
 
 
