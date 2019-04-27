@@ -74,6 +74,7 @@ int main() {
  *      by the rotation key, so every encrypted character is offset by the same number of letters. Before doing so, however, the function converts 
  *      any character that is lower-case into an upper-case so that the function is not case-sensitive. This function only encrypts English letters and
  *      leaves any special characters in the string as they were in the original message.
+ *      The encrypted message is returned to the string 'rotEncMsg'.
  */
 
 char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
@@ -97,7 +98,7 @@ char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
         }
 
     }
-    return *rotEncMsg;                                              //Returns the message Encrypted by the rotation cipher to the string 'rotEncMsg'.
+    return *rotEncMsg;                                              //Returns the message, encrypted by the rotation cipher, to the string 'rotEncMsg'.
 }   
 
 
@@ -105,6 +106,7 @@ char RotationEncryption(char *msg, char *rotEncMsg, int shift) {
  *      The rotation decryption function takes an encrypted message (possibly from RotationEncryption) and shifts each letter back to it's original value with
  *      the same rotation key given. Like the rotation encryption function, this function converts any lower-case letters into upper case and ignores special
  *      or foreign characters (i.e. they retain their original value).
+ *      The decrypted message is returned to the string 'rotDecMsg'.
  */
 
 char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift) {
@@ -127,27 +129,30 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift) {
             rotDecMsg[index] = rotEncMsg[index] - shift;
         }
     }
-    return *rotDecMsg;                                                    //Returns the message Decrypted by the rotation cipher to the string 'rotDecMsg'.
+    return *rotDecMsg;                                                    //Returns the message, decrypted by the rotation cipher, to the string 'rotDecMsg'.
 }
 
 
-//Generates a random alphabet subsitution.
+/* Substitution Alphabet:
+ *      This function generates a new (random) position for each letter in the alphabet every time it is called.
+ *      The substitution alphabet is returned to the string 'subAB'.
+ */
 
 char SubstitutionAlphabet(char *subAB) {
-    int index;
-    bool check[100]={0};
-    srand(time(NULL));
-    for(index = 0; index < 26; ++index) {
-        int rNum = rand() % (90 + 1 - 65) + 65;
-    if(!check[rNum]) {
-      subAB[index] = rNum;
+    int index;                                     //Declaring string index.
+    bool check[100]={0};                           //Boolean array (size is arbitrary) to serve later for reference as to whether or not that position has been used.
+    srand(time(NULL));                             //Generates a "random" seed based on computer's internal clock.
+    for(index = 0; index < 26; ++index) {          //For loop for generating the random positions for each letter.
+        int rNum = rand() % (90 + 1 - 65) + 65;    //Generating a random integer between 90 and 65.
+        if(!check[rNum]) {                         //If statement to check if alphabet position is not already taken, using that position where true. 
+          subAB[index] = rNum;
+        }
+        else {                                     //Else statement that sets index back by a value of 1 so the program can re-try a new postion for that letter.
+            index--;
+        }
+        check[rNum] = 1;                           //Sets the value at that index to 1, indicating that the position at this index is taken.
     }
-    else {
-      index--;
-    }
-    check[rNum] = 1;    
-  }
-    return *subAB;
+    return *subAB;                                 //Returns the substitution alphabet is returned to the string 'subAB'.
 }
 
 
