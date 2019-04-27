@@ -235,7 +235,7 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
        return *subDecMsg;                                                                        //Returns the message, decrypted by the substitution cipher, to the string 'subDecMsg'.
 }
     
-//
+/*
     
 char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet) {
     char rotAlphabet[26] = {};
@@ -285,3 +285,4 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
     printf("    Greatest = %d\n", greatest);
     return *rotDecMsgKl;
 }
+*/
