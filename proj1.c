@@ -237,7 +237,7 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
     
 //
     
-/*char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet) {
+char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet) {
     char rotAlphabet[26] = {};
     int ABIndex, REMIndex, rotABIndex, rotABIndexM1, msgLen = 1023;
     int greatest = rotAlphabet[0];
@@ -284,4 +284,4 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
     }
     printf("    Greatest = %d\n", greatest);
     return *rotDecMsgKl;
-}*/
+}
