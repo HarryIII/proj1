@@ -25,7 +25,7 @@ int main() {
     printf("5. Decryption of a message encrypted with a rotation cipher given cipher text only.\n");
     printf("6. Decryption of a message encrypted with a substitution cipher given cipher text only.\n");
     scanf("%d", &task);*/
-    task = 1; //manually setting task to bypass input for now.
+    
     char commonLetters[6] = {'E', 'T', 'A', 'O', 'I', 'N', '\0'};
     char alphabet[27] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\0'};
     char msg[1023] = "The quick brown fox jumps over a lazy dog.";
@@ -38,6 +38,7 @@ int main() {
     char rotDecMsg[13] = {};
     char rotDecMsgKl[13] = {};
     
+    task = 3; //manually setting task to bypass input for now.
     switch(task)
     {
         case 1: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, shift);
@@ -126,18 +127,18 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg, int shift) {
 //Generates a random alphabet subsitution.
 
 char SubstitutionAlphabet(char *subAB) {
-    int n=26, i, k;
-    bool arr[100]={0};
+    int index;
+    bool check[100]={0};
     srand(time(NULL));
-    for(i=0; i<n; ++i) {
+    for(index = 0; index < 26; ++index) {
         int rNum = rand() % (90 + 1 - 65) + 65;
-    if(!arr[rNum]) {
-      subAB[i] = rNum;
+    if(!check[rNum]) {
+      subAB[index] = rNum;
     }
     else {
-      i--;
+      index--;
     }
-    arr[rNum]=1;    
+    check[rNum] = 1;    
   }
     return *subAB;
 }
