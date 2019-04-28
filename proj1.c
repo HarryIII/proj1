@@ -19,41 +19,42 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
 
 
 /*  Main Function:
- *      asdfasdfasdf
- * 
+ *      The main function displays the options menu to the console, contains the strings (and some other variables) used by the functions and 
+ *      contains the switch statement that accepts the task input and executes the appropriate function.
  */
 
 int main() {
-    int task; //Integer for storing selected task
-    printf("Select a task: \n");
-    printf("1. Encryption of a message with a rotation cipher given the msg text and rotation amount.\n");
+    int task;                                                                                                       //Declaring integer for storing selected task.
+    printf("Select a task: \n");                                                                                    //This line and following 6 lines print menu
+    printf("1. Encryption of a message with a rotation cipher given the msg text and rotation amount.\n");          //... options.
     printf("2. Decryption of a message encrypted with a rotation cipher given cipher text and rotation amount.\n");
     printf("3. Encryption of a message with a substitution cipher given msg text and alphabet substitution.\n");
     printf("4. Decryption of a message encrypted with a substitution cipher given cipher text and substitutions.\n");
     printf("5. Decryption of a message encrypted with a rotation cipher given cipher text only.\n");
     printf("6. ---[NOT AVAILABLE]--- Decryption of a message encrypted with a substitution cipher given cipher text only.\n");
-    
+    //Following strings contains the alphabet, a place for a rotation substitution alphabet and a place for a substitution alphabet (generated later).
     char alphabet[27] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\0'};
-    char rotSubAB[27] = {};
-    char subAB[27] = {0};
-    
+    char rotSubAB[27] = {};     //"rotSubAB" = rotation substitution alphabet.
+    char subAB[27] = {0};       //"subAB" = substitution alphabet.
+    //The following string contains the 6 most common letters found in english texts.
     char commonLetters[6] = {'E', 'T', 'A', 'O', 'I', 'N'};
+    //The following string is a place for the message input (to be allocated by text in File I/O).
+    char msg[1023] = {};    //"msg" = message.
+    //The following strings are places for all of the rotation cipher messages.
+    char rotEncMsg[1023] = {};      //"rotEncMsg" = rotaton encryption message.
+    char rotDecMsg[1023] = {};      //"rotDecMsg" = rotation decryption message.
+    char rotDecMsgKl[1023] = {};    //"rotDecMsgKl" = rotation decryption message keyless.
+    //The following strings are places for all  of the substitution cipher messages.
+    char subEncMsg[1023] = {};      //"subEncMsg" = substitution encryption message.
+    char subDecMsg[1023] = {};      //"subDecMsg" = substitution decryption message.
     
-    char msg[1023] = {};
+    int shift;      //Declaring integer for storing selected rotation key (shift amount).
     
-    char rotEncMsg[1023] = {};
-    char rotDecMsg[1023] = {};
-    char rotDecMsgKl[1023] = {};
+    scanf("%d %d", &task, &shift);      //Scanning input file for task and shift variables.
     
-    char subEncMsg[1023] = {}; 
-    char subDecMsg[1023] = {};
-    char subDecMsgKl[1023] = {};
-    
-    int shift = 8;
+    //Generating alphabets for both cipher methods at beginning
     rotSubAB[27] = RotationSubstitutionAlphabet(alphabet, rotSubAB, shift);
-    subAB[27] = SubstitutionAlphabet(subAB); //Randomly generating a substitution at the beginnning, so it can be used independant of the case of encryption followed by decryption by subsitution.
-    
-    scanf("%d %d", &task, &shift);
+    subAB[27] = SubstitutionAlphabet(subAB);
     
     switch(task)
     {
