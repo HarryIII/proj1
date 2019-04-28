@@ -274,9 +274,10 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
     
 char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet, char *commonLetters) {
     char rotAlphabet[26] = {};
-    int ABIndex, REMIndex, rotABIndex, rotABIndexM1, cLSABIndex, shift, msgLen = 1023;
+    int ABIndex, REMIndex, rotABIndex, rotABIndexM1, cLSABIndex, shift, error, msgLen = 1023;
     int greatest = rotAlphabet[0];
     char tempRotSubAB[26] = {};
+    char check[20] = {};
     for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {
         if(  rotEncMsg[REMIndex] > 96 && rotEncMsg[REMIndex] < 123) {
             rotEncMsg[REMIndex] = rotEncMsg[REMIndex] - 32;
@@ -324,11 +325,35 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
                    tempRotDecMsg[REMIndex] = tempRotSubAB[tempRotSubABIndex];                        //... Where true, message character is replaced with rotation substitution alphabet character.
                }
            }   
-    }
+        }
+        for(instance = 1; instance < 5; instance++) {
+            for(wordIndex = 0; wordIndex < 20; wordIndex++) {
+                if(tempRotDecMsg[wordIndex] != ' ') {
+                    check[wordIndex] = tempRotDecMsg[wordIndex]
+                }
+                else {
+                    break;
+                }
+            }
+            for() {
+                
+            }
+            for(wordIndex = 0; wordIndex < 20; wordIndex++) {
+                //if check[wordIndex] != commonwords.txt[wordIndex]
+                    //error++;
+            }
+            if(error > 0) {
+                dictionaryCheck = 0;
+            }
+            else {
+                dictionaryCheck = 1;
+            }
+        }
+
         //Decrypt using most recent tempRotSubAB
         //check against dictionary
-        getDictionaryCheck();
-        if(getDictionaryCheck ==1) {
+        
+        if(dictionaryCheck == 1) {
             rotDecMsgKl = tempRotDecMsg;
             break;
         }
