@@ -1,8 +1,16 @@
+/* File I/O Information:
+ *      input.txt:
+ *          1: (task) 
+ *          2: (shift)
+ *
+ *
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 char Alphabet(char *alphabet);
@@ -56,53 +64,53 @@ int main() {
     rotSubAB[27] = RotationSubstitutionAlphabet(alphabet, rotSubAB, shift);
     subAB[27] = SubstitutionAlphabet(subAB);
     
+    //!!!!!!!!!!!!!!!!!!!!!add fscanf for encrypted messages to decrypt. make seperate strings for these.!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
     switch(task)
     {
-        case 1: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, rotSubAB, alphabet);
-            printf("Rotation Cipher Encryption:\n");
+        case 1: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, rotSubAB, alphabet);       //Calling rotation ecnryption function and saving return value to "rotEncMsg" string.
+            printf("Rotation Cipher Encryption:\n");                                            //Printing relevant information on following lines.
             printf("    Message: %s\n", msg);
             printf("    Rotation key: %d.\n", shift);
             printf("    Encryption: %s\n", rotEncMsg); break;
-        case 2: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, rotSubAB, alphabet);
-            rotDecMsg[1023] = RotationDecryption(rotEncMsg, rotDecMsg, rotSubAB, alphabet);
-            printf("Rotation Cipher Decryption:\n");
+        case 2: rotDecMsg[1023] = RotationDecryption(rotEncMsg, rotDecMsg, rotSubAB, alphabet); //Calling rotation decryption function and saving return value to "rotDecMsg" string.
+            printf("Rotation Cipher Decryption:\n");                                            //Printing relevant information on the following lines.
             printf("    Encrypted Message: %s\n", rotEncMsg);
             printf("    Rotation key: %d.\n", shift);
             printf("    Decryption: %s\n", rotDecMsg); break;
-        case 3: printf("Substitution Alphabet: %s\n", subAB);
+        case 3: printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
             printf("             Alphabet: %s\n", alphabet);
-            subEncMsg[1023] = SubstitutionEncryption(msg, subAB, subEncMsg, alphabet); 
-            printf("Substitution Cipher Encryption: %s\n", subEncMsg); break;
-        case 4: printf("Substitution Alphabet: %s\n", subAB);
+            subEncMsg[1023] = SubstitutionEncryption(msg, subAB, subEncMsg, alphabet);          //Calling substitution encryption function and saving return value to "subEncMsg" string.
+            printf("Substitution Cipher Encryption: %s\n", subEncMsg); break;                   //Printing relevant information.
+        case 4: printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
             printf("             Alphabet: %s\n", alphabet); 
-            subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAB, subDecMsg, alphabet);
+            subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAB, subDecMsg, alphabet);    //Calling substitution decryption function and saving return value to "subDecMsg" string.
             printf("Substitution Cipher Decryption: %s\n", subDecMsg); break;
-        case 5: printf("                      Encryption: %s\n", rotEncMsg);
-            RotationDecryptionKeyless(rotEncMsg, rotDecMsgKl, alphabet, commonLetters); break;
-        case 6: break;
+        case 5: printf("                      Encryption: %s\n", rotEncMsg);                    //Printing unseen message.
+            RotationDecryptionKeyless(rotEncMsg, rotDecMsgKl, alphabet, commonLetters); break;  //Calling rotation decryption (keyless) function.
+        case 6: printf("Sorry, option 6 is not yet available."); break;                                                                          
     }
 }
 
 
 /* Rotation Cipher Key:
  *      This function takes the shift amount and generates a substitution alphabet for the rotation cipher.
- *      The rotation substitution alphabet is returned to the string 'rotSubAB'
+ *      The rotation substitution alphabet is returned to the string 'rotSubAB'.
  */
 
 char RotationSubstitutionAlphabet(char *alphabet, char *rotSubAB, int shift) {
-    int abIndex;
-    //if shift is negative (less than zero) find equivelent positive shift
-    for(abIndex = 0; abIndex < 26; abIndex++) {
-        if((alphabet[abIndex] + shift) > 90) {
-            int difference = 90 - alphabet[abIndex];                       
-            int contShift = abs(shift - difference);
-            rotSubAB[abIndex] = 64 + contShift;
+    int abIndex;                                                                  //Integer variable for storing alphabet index.
+    for(abIndex = 0; abIndex < 26; abIndex++) {                                   //For loop for generating substitution characters for each index (0-25, representing A-Z).
+        if((alphabet[abIndex] + shift) > 90) {                                    //If statement to check whether rotation shift goes beyond 'Z'.
+            int difference = 90 - alphabet[abIndex];                              //Finding difference between 'Z' and letter being replaced
+            int contShift = abs(shift - difference);                              //Finding shift beyond 'Z' (starting from 'A').
+            rotSubAB[abIndex] = 64 + contShift;                                   //Adding remaining shift to letter at index in rotation substitution alphabet.
         }
         else {
-        rotSubAB[abIndex] = alphabet[abIndex] + shift;
+        rotSubAB[abIndex] = alphabet[abIndex] + shift;                            //Adding shift to letter at index in rotation substitution alphabet.
         }
     }
-    return *rotSubAB;
+    return *rotSubAB;                                                             //Returns rotation substitution alphabet to the string 'rotSubAB'.
 }
 
 
@@ -128,7 +136,7 @@ char RotationEncryption(char *msg, char *rotEncMsg, char *rotSubAB, char *alphab
              rotEncMsg[msgIndex] = msg[msgIndex];                                        //... there is a positive instance.
             }
             else if(msg[msgIndex] == alphabet[abIndex]) {                                //Else If statement checks if message character matches alphabet character. 
-                rotEncMsg[msgIndex] = rotSubAB[abIndex];
+                rotEncMsg[msgIndex] = rotSubAB[abIndex];                                 //Replaces character with corresponding substitution alphabet character.
             }
         } 
     }
@@ -144,7 +152,7 @@ char RotationEncryption(char *msg, char *rotEncMsg, char *rotSubAB, char *alphab
  */
 
 char RotationDecryption(char *rotEncMsg, char *rotDecMsg, char *rotSubAB, char *alphabet) {
-    int index, rotSubABIndex, rotEncMsgIndex, msgLen = 1023;                                   //Declaring string index and initialising the length of the message (an arbitrary number).
+    int index, rotSubABIndex, rotEncMsgIndex, msgLen = 1023;                                   //Declaring indecies and initialising the length of the message (an arbitrary number).
     for(index = 0; index < msgLen; index++) {                                                  //For loop goes through each character to check if it is lower-case and converts any instances  
         if(rotEncMsg[index] > 96 && rotEncMsg[index] < 123) {                                  //... into upper-case letters.
             rotEncMsg[index] = rotEncMsg[index] - 32;
@@ -152,11 +160,11 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg, char *rotSubAB, char *
     }
     for(rotEncMsgIndex = 0; rotEncMsgIndex < msgLen; rotEncMsgIndex++) {                       //For loop for rotation decryption. Goes through each character of the encrypted message.
            for(rotSubABIndex = 0; rotSubABIndex < 26; rotSubABIndex++) {                       //... For each encrypted message character, each character of rotation substitution alphabet is compared to later test if it matches.
-               if(rotEncMsg[rotEncMsgIndex] < 65 || rotEncMsg[rotEncMsgIndex] > 90) {          //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
+               if(rotEncMsg[rotEncMsgIndex] < 65 || rotEncMsg[rotEncMsgIndex] > 90) {          //If statement checks if the letter is not within range of A-Z, keeping the value at any index
                    rotDecMsg[rotEncMsgIndex] = rotEncMsg[rotEncMsgIndex];                      //... where true.
                }
                else if(rotEncMsg[rotEncMsgIndex] == rotSubAB[rotSubABIndex]) {                 //Else If statement checks if encrypted message character matches rotation substitution alphabet character.
-                   rotDecMsg[rotEncMsgIndex] = alphabet[rotSubABIndex];                        //... Where true, message character is replaced with rotation substitution alphabet character.
+                   rotDecMsg[rotEncMsgIndex] = alphabet[rotSubABIndex];                        //... Where true, message character is replaced with corresponding rotation substitution alphabet character.
                }
            }   
     }
@@ -170,20 +178,20 @@ char RotationDecryption(char *rotEncMsg, char *rotDecMsg, char *rotSubAB, char *
  */
 
 char SubstitutionAlphabet(char *subAB) {
-    int abIndex;                                  //Declaring Alphabet Index.
-    bool check[100]={0};                           //Boolean array (size is arbitrary) to serve later for reference as to whether or not that position has been used.
-    srand(time(NULL));                             //Generates a "random" seed based on computer's internal clock.
-    for(abIndex = 0; abIndex < 26; ++abIndex) {          //For loop for generating the random positions for each letter.
-        int rNum = rand() % (90 + 1 - 65) + 65;    //Generating a random integer between 90 and 65.
-        if(!check[rNum]) {                         //If statement to check if alphabet position is not already taken, using that position where true. 
+    int abIndex;                                    //Declaring Alphabet Index.
+    bool check[100]={0};                            //Boolean array (size is arbitrary) to serve later for reference as to whether or not an index has been used.
+    srand(time(NULL));                              //Generates a "random" seed based on computer's internal clock.
+    for(abIndex = 0; abIndex < 26; ++abIndex) {     //For loop for generating the random positions for each letter.
+        int rNum = rand() % (90 + 1 - 65) + 65;     //Generating a random integer between 90 and 65.
+        if(!check[rNum]) {                          //If statement to check if alphabet position is not already taken, using that position where true. 
           subAB[abIndex] = rNum;
         }
-        else {                                     //Else statement that sets index back by a value of 1 so the program can re-try a new postion for that letter.
+        else {                                      //Else statement that sets index back by a value of 1 so the program can re-try a new postion for that letter.
             abIndex--;
         }
-        check[rNum] = 1;                           //Sets the value at that index to 1, indicating that the position at this index is taken.
+        check[rNum] = 1;                            //Sets the value at that index to 1, indicating that the position at this index is taken.
     }
-    return *subAB;                                 //Returns the substitution alphabet is returned to the string 'subAB'.
+    return *subAB;                                  //Returns the substitution alphabet is returned to the string 'subAB'.
 }
 
 
