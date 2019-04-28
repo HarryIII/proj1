@@ -274,10 +274,10 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
     
 char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabet, char *commonLetters) {
     char rotAlphabet[26] = {};
-    int ABIndex, REMIndex, rotABIndex, rotABIndexM1, cLSABIndex, shift, error, msgLen = 1023;
+    int ABIndex, REMIndex, rotABIndex, rotABIndexM1, cLSABIndex, shift, error, wordNum, msgLen = 1023;
     int greatest = rotAlphabet[0];
     char tempRotSubAB[26] = {};
-    char check[20] = {};
+    char check[20] = {}, tempWord[20] = {};
     for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {
         if(  rotEncMsg[REMIndex] > 96 && rotEncMsg[REMIndex] < 123) {
             rotEncMsg[REMIndex] = rotEncMsg[REMIndex] - 32;
@@ -302,6 +302,12 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
     
     char commonLetterShift[7] = {0};
     int cLSIndex;
+    
+    File *commonWordDict;
+    commonWordDict = fopen("commonwords.txt", "r");
+    if(commonWordDict == NULL) {
+        perror("commonWordDict");
+    }
     for(cLSIndex = 0; cLSIndex < 7; cLSIndex++) {
         commonLetterShift[cLSIndex] = abs(commonLetters[cLSIndex] - greatest);
     }
@@ -335,12 +341,18 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
                     break;
                 }
             }
-            for() {
-                
-            }
-            for(wordIndex = 0; wordIndex < 20; wordIndex++) {
-                //if check[wordIndex] != commonwords.txt[wordIndex]
-                    //error++;
+            for(wordNum = 0; wordNum < 10000; wordNum++) {
+                fscanf(commonWordDict, "%s", tempWord)
+                for(tempWordIndex = 0; tempWordIndex < (sizeof(tempword) + 1); tempWordIndex++) {
+                    for(wordIndex = 0; wordIndex < 20; wordIndex++) {
+                        if (check[wordIndex] != tempWord[wordIndex]) {
+                            error++;
+                        }
+                    else {
+                        error = error;
+                    }
+                    }
+                } 
             }
             if(error > 0) {
                 dictionaryCheck = 0;
@@ -358,5 +370,6 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
             break;
         }
     }
+    fclose(commonwords);
     return *rotDecMsgKl;
 }
