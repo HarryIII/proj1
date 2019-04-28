@@ -322,54 +322,5 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *rotDecMsgKl, char *alphabe
             tempRotSubAB[cLSABIndex] = alphabet[cLSABIndex] + shift;
             }
         }
-        for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {                                              //For loop for rotation decryption. Goes through each character of the encrypted message.
-           for(tempRotSubABIndex = 0; tempRotSubABIndex < 26; tempRotSubABIndex++) {                       //... For each encrypted message character, each character of rotation substitution alphabet is compared to later test if it matches.
-               if(rotEncMsg[REMIndex] < 65 || rotEncMsg[REMIndex] > 90) {                               //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
-                   tempRotDecMsg[REMIndex] = rotEncMsg[REMIndex];                                           //... where true.
-               }
-               else if(rotEncMsg[REMIndex] == rotSubAB[tempRotSubABIndex]) {                        //Else If statement checks if encrypted message character matches rotation substitution alphabet character.
-                   tempRotDecMsg[REMIndex] = tempRotSubAB[tempRotSubABIndex];                        //... Where true, message character is replaced with rotation substitution alphabet character.
-               }
-           }   
-        }
-        for(instance = 1; instance < 5; instance++) {
-            for(wordIndex = 0; wordIndex < 20; wordIndex++) {
-                if(tempRotDecMsg[wordIndex] != ' ') {
-                    check[wordIndex] = tempRotDecMsg[wordIndex]
-                }
-                else {
-                    break;
-                }
-            }
-            for(wordNum = 0; wordNum < 10000; wordNum++) {
-                fscanf(commonWordDict, "%s", tempWord)
-                for(tempWordIndex = 0; tempWordIndex < (sizeof(tempword) + 1); tempWordIndex++) {
-                    for(wordIndex = 0; wordIndex < 20; wordIndex++) {
-                        if (check[wordIndex] != tempWord[wordIndex]) {
-                            error++;
-                        }
-                    else {
-                        error = error;
-                    }
-                    }
-                } 
-            }
-            if(error > 0) {
-                dictionaryCheck = 0;
-            }
-            else {
-                dictionaryCheck = 1;
-            }
-        }
-
-        //Decrypt using most recent tempRotSubAB
-        //check against dictionary
-        
-        if(dictionaryCheck == 1) {
-            rotDecMsgKl = tempRotDecMsg;
-            break;
-        }
-    }
-    fclose(commonwords);
     return *rotDecMsgKl;
 }
