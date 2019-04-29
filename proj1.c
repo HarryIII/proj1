@@ -340,6 +340,7 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
     char commonLetter;
     int occurences[25] = {0};
     char tempRotSubAB[25] = {0};
+    char tempRotDecMsg[1023] = {0};
     int greatest = occurences[0];
     for(REMIndex = 0; REMIndex < 1023; REMIndex++) {
         for(ABIndex = 0; ABIndex < 26; ABIndex++) {
@@ -348,7 +349,8 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
             }
         }
     }
-    for(commonOrder = 0; commonOrder < 7; commonOrder++) {
+    for(commonOrder = 0; commonOrder < 6; commonOrder++) {
+        int attempt = commonOrder + 1;
         for(occurIndex = 0; occurIndex < 26; occurIndex++) {
             if(occurences[occurIndex] >= greatest) {
                 greatest = occurences[occurIndex]; //greatest is the number of times it appears, alphabet[occurIndex] is the letter.
@@ -356,20 +358,30 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
             }
         }
         lShift = abs(commonLetters[commonOrder] - commonLetter);
-        for(ABIndex = 0; ABIndex < 26; ABindex++) {
+        for(ABIndex = 0; ABIndex < 26; ABIndex++) {
             if(alphabet[ABIndex] - lShift < 65) {
                 int difference = alphabet[ABIndex] - 64;
                 int contShift = abs(lShift - difference);
-                tempRotSub[ABIndex] = 90 - contShift;   
+                tempRotSubAB[ABIndex] = 90 - contShift;   
             }
             else {
-                tempRotSub[ABIndex] = alphabet[ABIndex] - lShift
+                tempRotSubAB[ABIndex] = alphabet[ABIndex] - lShift;
             }
         }
         for(REMIndex = 0; REMIndex < 1023; REMIndex++) {
-            
+            for(ABIndex = 0; ABIndex < 26; ABIndex++) {
+                if(rotEncMsgTest[REMIndex] < 65 || rotEncMsgTest[REMIndex] > 90) {
+                    tempRotDecMsg[REMIndex] = rotEncMsgTest[REMIndex];
+                }
+                else if(rotEncMsgTest[REMIndex] == alphabet[ABIndex]) {
+                    tempRotDecMsg[REMIndex] = tempRotSubAB[ABIndex];
+                }
+            }
         }
+        printf("Attempt %d: \n", attempt);
+        printf("           %s \n", tempRotDecMsg);
         //decrypt and print
+        
         //remove letter and start for loop again
     }
     return 0;
