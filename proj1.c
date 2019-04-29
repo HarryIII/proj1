@@ -1,10 +1,13 @@
 /* File I/O Information:
  *      input.txt:
- *          1: (task) 
- *          2: (shift)
- *
- *
- *
+ *          1: (task number --> 'task') 
+ *          2: (shift amount --> 'shift')
+ *      filemessage.txt:
+ *          1: (message to be encrypted --> 'msg')
+ *      testRotEncMsg.txt:
+ *          1: (message to be decrypted by rotation --> 'rotEncMsgTest')
+ *      testSubAlphabet.txt:
+ *          1: (Given substitution alphabet --> 'subAlphabetTest')
  */
 
 #include <stdio.h>
@@ -21,7 +24,7 @@ char RotationDecryption(char *rotEncMsgTest, char *rotDecMsg, char *rotSubAB, ch
 
 char SubstitutionAlphabet(char *subAB);
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet);
-char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet);
+char SubstitutionDecryption(char *subEncMsg,  char *subAlphabetTest, char *subDecMsg, char *alphabet);
 
 char RotationDecryptionKeyless(char *rotEncMsg, char *alphabet, char *commonLetters);
 
@@ -91,20 +94,22 @@ int main() {
     if(filemessage == NULL) {
         perror("testSubAlphabet");
     }
-    /*while(feof(testRotEncMsg) == 0) {
-        fscanf(testRotEncMsg, "%s", rotEncMsgTest);
-    }
-    while(feof(testSubAlphabet) == 0) {
-    fscanf(testSubAlphabet, "%s", subAlphabetTest);
-    }
-    while(feof(filemessage) == 0) {
-    fscanf(filemessage, "%s", msg);
-    }*/
    
-    fgets(rotEncMsgTest, 1023, testRotEncMsg);
-    fgets(subAlphabetTest, 1023, testSubAlphabet);
-    fgets(msg, 1023, filemessage);
-    printf("%s", msg);
+    fseek(testRotEncMsg, 0, SEEK_END);
+    int tREMSize = ftell(testRotEncMsg);
+    fseek(testRotEncMsg, 0, SEEK_SET);
+    
+    fseek(testSubAlphabet, 0, SEEK_END);
+    int tSABSize = ftell(testSubAlphabet);
+    fseek(testSubAlphabet, 0, SEEK_SET);
+    
+    fseek(filemessage, 0, SEEK_END);
+    int fMSize = ftell(filemessage);
+    fseek(filemessage, 0, SEEK_SET);
+   
+    fgets(rotEncMsgTest, tREMSize, testRotEncMsg);
+    fgets(subAlphabetTest, tSABSize, testSubAlphabet);
+    fgets(msg, fMSize, filemessage);
     printf("Task %d selected:\n", task);
     printf(" \n");
     
@@ -119,7 +124,7 @@ int main() {
         case 2: rotDecMsg[1023] = RotationDecryption(rotEncMsgTest, rotDecMsg, rotSubAB, alphabet); //Calling rotation decryption function and saving return value to "rotDecMsg" string.
             printf("Rotation Cipher Decryption:\n");                                            //Printing relevant information on the following lines.
             printf(" \n");
-            printf("    Encrypted Message: %s\n", rotEncMsgTest);
+            printf("    Encrypted Message: %s \n", rotEncMsgTest);
             printf("    Rotation key: %d.\n", shift);
             printf("    Decryption: %s\n", rotDecMsg); break;
         case 3: printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
@@ -130,7 +135,7 @@ int main() {
         case 4: printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
             printf("             Alphabet: %s\n", alphabet); 
             printf(" \n");
-            subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAB, subDecMsg, alphabet);    //Calling substitution decryption function and saving return value to "subDecMsg" string.
+            subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAlphabetTest, subDecMsg, alphabet);    //Calling substitution decryption function and saving return value to "subDecMsg" string.
             printf("Substitution Cipher Decryption: %s\n", subDecMsg); break;
         case 5: printf("                      Encryption: %s\n", rotEncMsg);                    //Printing unseen message.
             RotationDecryptionKeyless(rotEncMsg, alphabet, commonLetters); break;               //Calling rotation decryption (keyless) function.
@@ -279,7 +284,7 @@ char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alpha
  *      The decrypted message is returned to the string 'subDecMsg'.
  */
 
-char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char *alphabet) {
+char SubstitutionDecryption(char *subEncMsg,  char *subAlphabetTest, char *subDecMsg, char *alphabet) {
     int SubEncMsgIndex, subABIndex, msgLen = 1023;                                               //Declaring Substitution Encryption Message and Substitution Alphabet indices. Initialising Message Length.
     for(SubEncMsgIndex = 0; SubEncMsgIndex < msgLen; SubEncMsgIndex++) {                         
         if(subEncMsg[SubEncMsgIndex] > 96 && subEncMsg[SubEncMsgIndex] < 123) {                  
@@ -291,7 +296,7 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
                if(subEncMsg[SubEncMsgIndex] < 65 || subEncMsg[SubEncMsgIndex] > 90) {            //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
                    subDecMsg[SubEncMsgIndex] = subEncMsg[SubEncMsgIndex];                        //... where true.
                }
-               else if(subEncMsg[SubEncMsgIndex] == subAB[subABIndex]) {                         //Else If statement checks if encrypted message character matches substitution alphabet character.
+               else if(subEncMsg[SubEncMsgIndex] == subAlphabetTest[subABIndex]) {                         //Else If statement checks if encrypted message character matches substitution alphabet character.
                    subDecMsg[SubEncMsgIndex] = alphabet[subABIndex];                             //... Where true, message character is replaced with substitution alphabet character.
                }
            }   
@@ -309,7 +314,7 @@ char SubstitutionDecryption(char *subEncMsg,  char *subAB, char *subDecMsg, char
     
 char RotationDecryptionKeyless(char *rotEncMsg, char *alphabet, char *commonLetters) {
     char occurences[26] = {};
-    int ABIndex, REMIndex, rotABIndex, cLSABIndex, ordinalIndex, shift, msgLen = 1023;
+    int ABIndex, REMIndex, rotABIndex, cLSABIndex, ordinalIndex, msgLen = 1023;
     char ordinalGreatest[7] = {0};
     char tempRotSubAB[26] = {};
     char tempRotDecMsg[1023] = {};
@@ -355,7 +360,7 @@ char RotationDecryptionKeyless(char *rotEncMsg, char *alphabet, char *commonLett
         for(cLSABIndex = 0; cLSABIndex < 26; cLSABIndex++) {
             if((alphabet[cLSABIndex] + commonLetterShift[cLSIndex]) > 90) {
                 int difference = 90 - commonLetterShift[cLSIndex];                       
-                int contShift = abs(shift - difference);
+                int contShift = abs(commonLetterShift[cLSIndex] - difference);
                 tempRotSubAB[cLSABIndex] = 64 + contShift;
             }
             else {
