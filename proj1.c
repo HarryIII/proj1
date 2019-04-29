@@ -1,3 +1,12 @@
+/* The program:
+ *      This program use File I/O functions to read messages and seperate functions to encrypt or decrypt
+ *      the messages accordingly. There are multiple options for encryption/decyrption which are displayed
+ *      in the options menu and can be selected by setting the desired task in the decisions.txt file. 
+ *      The program is capable of processing two cipher methods: rotation cipher (or Caesar cipher)
+ *      and substitutiton cipher.
+ */
+
+
 /* File I/O Information:
  *      input.txt:
  *          1: (task number --> 'task') 
@@ -10,6 +19,8 @@
  *          1: (given substitution alphabet --> 'subAlphabetTest')
  *      testSubEncMsg.txt:
  *          1: (message to be decrypted by substitutiton --> 'subEmcMsgTest')
+ *
+ * ---Each file contains sample messages (these should be replaced)---
  */
 
 #include <stdio.h>
@@ -18,6 +29,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+//Following lines contain function prototypes for each function in program.
 char Alphabet(char *alphabet);
 
 char RotationSubstitutionAlphabet(char *alphabet, char *rotSubAB, int shift);
@@ -37,9 +49,9 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
  */
 
 int main() {
-    int task;                                                                                                       //Declaring integer for storing selected task.
-    printf("Select a task: \n");                                                                                    //This line and following 6 lines print menu
-    printf("1. Encryption of a message with a rotation cipher given the msg text and rotation amount.\n");          //... options.
+    int task;                                                                                                           //Declaring integer for storing selected task.
+    printf("Select a task: \n");                                                                                        //This line and following 6 lines print menu
+    printf("1. Encryption of a message with a rotation cipher given the msg text and rotation amount.\n");              //... options.
     printf("2. Decryption of a message encrypted with a rotation cipher given cipher text and rotation amount.\n");
     printf("3. Encryption of a message with a substitution cipher given msg text and alphabet substitution.\n");
     printf("4. Decryption of a message encrypted with a substitution cipher given cipher text and substitutions.\n");
@@ -49,12 +61,12 @@ int main() {
 
     //Following strings contains the alphabet, a place for a rotation substitution alphabet and a place for a substitution alphabet (generated later).
     char alphabet[27] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\0'};
-    char rotSubAB[27] = {0};     //"rotSubAB" = rotation substitution alphabet.
-    char subAB[27] = {0};       //"subAB" = substitution alphabet.
+    char rotSubAB[27] = {0};        //"rotSubAB" = rotation substitution alphabet.
+    char subAB[27] = {0};           //"subAB" = substitution alphabet.
     //The following string contains the 6 most common letters found in english texts.
     char commonLetters[6] = {'E', 'T', 'A', 'O', 'I', 'N'};
     //The following string is a place for the message input (to be allocated by text in File I/O).
-    char msg[1023] = {};    //"msg" = message.
+    char msg[1023] = {};            //"msg" = message.
     //The following strings are places for all of the rotation cipher messages.
     char rotEncMsg[1023] = {};      //"rotEncMsg" = rotaton encryption message.
     char rotDecMsg[1023] = {};      //"rotDecMsg" = rotation decryption message.
@@ -62,47 +74,45 @@ int main() {
     char subEncMsg[1023] = {};      //"subEncMsg" = substitution encryption message.
     char subDecMsg[1023] = {};      //"subDecMsg" = substitution decryption message.
     
-    int shift;      //Declaring integer for storing selected rotation key (shift amount).
+    int shift;                      //Declaring integer for storing selected rotation key (shift amount).
     
     FILE *decision;
     decision = fopen("decisions.txt", "r");
     if(decision == NULL) {
         perror("decision");
     }
-    fscanf(decision, "%d %d", &task, &shift);      //Scanning input file for task and shift variables.
+    fscanf(decision, "%d %d", &task, &shift);      //Scanning input file for assigning task and shift variables.
     
     //Generating alphabets for both cipher methods at beginning
     rotSubAB[27] = RotationSubstitutionAlphabet(alphabet, rotSubAB, shift);
     subAB[27] = SubstitutionAlphabet(subAB);
-    
+    //The following lines contain the arrays for File I/O input.
     char rotEncMsgTest[1023] = {0};
     char subAlphabetTest[27] = {0};
     char subEncMsgTest[1023] = {0};
-    
+    //The following functions open each file and print an error if any return NULL
     FILE *testRotEncMsg;
     testRotEncMsg = fopen("testRotEncMsg.txt", "r");
     if(testRotEncMsg == NULL) {
         perror("testRotEncMsg");
     }
-    
     FILE *testSubAlphabet;
     testSubAlphabet = fopen("testSubAlphabet.txt", "r");
     if(testSubAlphabet == NULL) {
         perror("testSubAlphabet");
     }
-    
     FILE *filemessage;
     filemessage = fopen("filemessage.txt", "r");
     if(filemessage == NULL) {
         perror("testSubAlphabet");
     }
-    
     FILE *testSubEncMsg;
     testSubEncMsg = fopen("testSubEncMsg.txt", "r");
     if(testSubEncMsg == NULL) {
         perror("testSubEncMsg");
     }
-   
+
+    //The following functions find seek to the end of the file to find it's size and seek back to the start so it can be read properly.
     fseek(testRotEncMsg, 0, SEEK_END);
     int tREMSize = ftell(testRotEncMsg) + 1;
     fseek(testRotEncMsg, 0, SEEK_SET);
@@ -119,48 +129,54 @@ int main() {
     int tSEMSize = ftell(testSubEncMsg);
     fseek(testSubEncMsg, 0, SEEK_SET);
    
+    //The following functions read each file and save their data to the previously seen arrays. 
     fgets(rotEncMsgTest, tREMSize, testRotEncMsg);
     fgets(subAlphabetTest, tSABSize, testSubAlphabet);
     fgets(msg, fMSize, filemessage);
     fgets(subEncMsgTest, tSEMSize, testSubEncMsg);
+    
+    //The following lines inform the user of which task they have selected by printing to the console.
     printf("Task %d selected:\n", task);
     printf(" \n");
     
+    //Switch statement allows executes the appropriate code that relates to the users task selection input.
     switch(task)
     {
-        case 1: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, rotSubAB, alphabet);       //Calling rotation ecnryption function and saving return value to "rotEncMsg" string.
-            printf("Rotation Cipher Encryption:\n");                                            //Printing relevant information on following lines.
+        case 1: rotEncMsg[1023] = RotationEncryption(msg, rotEncMsg, rotSubAB, alphabet);           //Calling rotation ecnryption function and saving return value to "rotEncMsg" string.
+            printf("Rotation Cipher Encryption:\n");                                                //Printing relevant information on following lines.
             printf(" \n");
             printf("    Message: %s\n", msg);
             printf("    Rotation key: %d.\n", shift);
             printf("    Encryption: %s\n", rotEncMsg); break;
         case 2: rotDecMsg[1023] = RotationDecryption(rotEncMsgTest, rotDecMsg, rotSubAB, alphabet); //Calling rotation decryption function and saving return value to "rotDecMsg" string.
-            printf("Rotation Cipher Decryption:\n");                                            //Printing relevant information on the following lines.
+            printf("Rotation Cipher Decryption:\n");                                                //Printing relevant information on the following lines.
             printf(" \n");
             printf("    Encrypted Message: %s \n", rotEncMsgTest);
             printf("    Rotation key: %d.\n", shift);
             printf("    Decryption: %s\n", rotDecMsg); break;
         case 3: printf("Substitution Cipher Encryption: \n");
             printf(" \n");
-            printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
+            printf("Substitution Alphabet: %s\n", subAB);                                           //Printing substitution alphabet.
             printf("Alphabet:              %s\n", alphabet);
             printf(" \n");
             printf("Message:    %s \n", msg);
-            subEncMsg[1023] = SubstitutionEncryption(msg, subAB, subEncMsg, alphabet);          //Calling substitution encryption function and saving return value to "subEncMsg" string.
-            printf("Encryption: %s\n", subEncMsg); break;                   //Printing relevant information.
+            subEncMsg[1023] = SubstitutionEncryption(msg, subAB, subEncMsg, alphabet);              //Calling substitution encryption function and saving return value to "subEncMsg" string.
+            printf("Encryption: %s\n", subEncMsg); break;                                           //Printing relevant information.
         case 4: printf("Substitution Cipher Decryption: \n");
             printf(" \n");
-            printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
+            printf("Substitution Alphabet: %s\n", subAB);                                           //Printing substitution alphabet.
             printf("Alphabet:              %s\n", alphabet); 
             printf(" \n");
             printf("Encryption: %s \n", subEncMsgTest);
             subDecMsg[1023] = SubstitutionDecryption(subEncMsgTest, subAlphabetTest, subDecMsg, alphabet);    //Calling substitution decryption function and saving return value to "subDecMsg" string.
             printf("Decryption: %s \n", subDecMsg); break;
-        case 5: printf("Encryption: %s\n", rotEncMsgTest);                    //Printing unseen message.
+        case 5: printf("Encryption: %s\n", rotEncMsgTest);                                                    //Printing unseen message.
             printf(" \n");
-            RotationDecryptionKeyless(rotEncMsgTest, alphabet, commonLetters); break;               //Calling rotation decryption (keyless) function.
+            RotationDecryptionKeyless(rotEncMsgTest, alphabet, commonLetters); break;                         //Calling rotation decryption (keyless) function.
         case 6: printf("Sorry, option 6 is not yet available."); break;                                                                          
     }
+    
+    //The following functions close each file once the program has finished.
     fclose(testRotEncMsg);
     fclose(testSubAlphabet);
     fclose(decision);
@@ -395,4 +411,3 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
     }
     return 0;                                                                                 //Returning zero as each attempt was printed rather than returned.
 }
-
