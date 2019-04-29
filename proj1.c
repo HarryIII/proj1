@@ -369,30 +369,30 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
                 commonLetter = commonLetter;
             }
         }
-        lShift = abs(commonLetters[commonOrder] - commonLetter);                            //Finding shift amount based on most common letter in 'commonLetters[]' array
-        for(ABIndex = 0; ABIndex < 26; ABIndex++) {                                         
-            if(alphabet[ABIndex] - lShift < 65) {
+        lShift = abs(commonLetters[commonOrder] - commonLetter);                              //Finding shift amount based on most common letter in 'commonLetters[]' array.
+        for(ABIndex = 0; ABIndex < 26; ABIndex++) {                                           //For loop generates temporary rotation substitution alphabet.
+            if(alphabet[ABIndex] - lShift < 65) {                                             //If statement to fix error of shift going past boundary of A-Z.
                 int difference = alphabet[ABIndex] - 64;
                 int contShift = abs(lShift - difference);
                 tempRotSubAB[ABIndex] = 90 - contShift;   
             }
-            else {
+            else {                                                                            //Else statement for normal case of using shift.
                 tempRotSubAB[ABIndex] = alphabet[ABIndex] - lShift;
             }
         }
-        for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {
-            for(ABIndex = 0; ABIndex < 26; ABIndex++) {
-                if(rotEncMsgTest[REMIndex] < 65 || rotEncMsgTest[REMIndex] > 90) {
-                    tempRotDecMsg[REMIndex] = rotEncMsgTest[REMIndex];
+        for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {                                    //For loop for applying temporary rotation substitution alphabet (for each attempt)
+            for(ABIndex = 0; ABIndex < 26; ABIndex++) {                                       
+                if(rotEncMsgTest[REMIndex] < 65 || rotEncMsgTest[REMIndex] > 90) {            //If statement for where rotation encryption message test is outside boundary of A-Z,
+                    tempRotDecMsg[REMIndex] = rotEncMsgTest[REMIndex];                        //... to keep its value at that index the same.
                 }
-                else if(rotEncMsgTest[REMIndex] == alphabet[ABIndex]) {
+                else if(rotEncMsgTest[REMIndex] == alphabet[ABIndex]) {                       //Else If statement replaces each letter between A-Z with corresponding temporary rotation alphabet letter.
                     tempRotDecMsg[REMIndex] = tempRotSubAB[ABIndex];
                 }
             }
         }
-        printf("Attempt %d: \n", attempt);
-        printf("            %s \n", tempRotDecMsg);
+        printf("Attempt %d: \n", attempt);                                                    //Printing each attempt to console.
+        printf("            %s \n", tempRotDecMsg);                                         
     }
-    return 0;
+    return 0;                                                                                 //Returning zero as each attempt was printed rather than returned.
 }
 
