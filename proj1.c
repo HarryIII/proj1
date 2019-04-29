@@ -156,7 +156,8 @@ int main() {
             printf("Encryption: %s \n", subEncMsgTest);
             subDecMsg[1023] = SubstitutionDecryption(subEncMsgTest, subAlphabetTest, subDecMsg, alphabet);    //Calling substitution decryption function and saving return value to "subDecMsg" string.
             printf("Decryption: %s \n", subDecMsg); break;
-        case 5: printf("                   Encryption: %s\n", rotEncMsgTest);                    //Printing unseen message.
+        case 5: printf("Encryption: %s\n", rotEncMsgTest);                    //Printing unseen message.
+            printf(" \n");
             RotationDecryptionKeyless(rotEncMsgTest, alphabet, commonLetters); break;               //Calling rotation decryption (keyless) function.
         case 6: printf("Sorry, option 6 is not yet available."); break;                                                                          
     }
@@ -331,34 +332,45 @@ char SubstitutionDecryption(char *subEncMsgTest,  char *subAlphabetTest, char *s
 /* Rotation Decryption Keyless:
  *      This function takes a message encrypted by a rotation cipher and offers 6 possible decrypted
  *      messages for the user to interpret, based off of the 6 most common letters in the english language.
- *      ---[INCOMPLETE]-- Not properly working.
- * 
+ *      ---[INCOMPLETE]-- Partially Working. There is a pattern to when it works and when it doesn't. Pressing run enough
+ *      will achieve expected results (although these may not necessarily always be correct).
+ *      Does not return a value to a char as it prints each attempt from the function.
  */
     
 char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *commonLetters) {
-    int REMIndex, ABIndex, occurIndex, commonOrder, lShift;
-    char commonLetter;
-    int occurences[25] = {0};
-    char tempRotSubAB[25] = {0};
-    char tempRotDecMsg[1023] = {0};
-    int greatest = occurences[0];
-    for(REMIndex = 0; REMIndex < 1023; REMIndex++) {
+    int REMIndex, ABIndex, occurIndex, commonOrder, lShift;                                   //Declaring indicies and local shift amount.
+    int msgLen = 1023;                                                                        //Initialising message length.
+    char commonLetter;                                                                        //Declaring variable for most common letter.
+    int occurences[25] = {0};                                                                 //Integer array for number of occurences of each letter. 
+    char tempRotSubAB[25] = {0};                                                              //Temporary rotation substitution alphabet, changes for every attempt.
+    char tempRotDecMsg[1023] = {0};                                                           //Temporary rotation decryption message, changes for every attempt based on rotation alphabet changing.                           
+    int greatest = occurences[0];                                                             //Integer describes greatest number of occurences of a letter.
+    for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {                                        //For loop goes through each character to check if it is lower-case and converts any instances 
+        if(rotEncMsgTest[REMIndex] > 96 && rotEncMsgTest[REMIndex] < 123) {                   //... into upper-case letters. 
+            rotEncMsgTest[REMIndex] = rotEncMsgTest[REMIndex] - 32;                                           
+        }
+    }
+    for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {                                        //For loop to count how many instances of each letter occur.
         for(ABIndex = 0; ABIndex < 26; ABIndex++) {
-            if(rotEncMsgTest[REMIndex] == alphabet[ABIndex]) {
-                occurences[ABIndex]++;
+            if(rotEncMsgTest[REMIndex] == alphabet[ABIndex]) {                                //If statement to test each index for what letter is present (by comparing to the alphabet).
+                occurences[ABIndex]++;                                                        //Saves value to 'occurences[25]' array.
             }
         }
     }
-    for(commonOrder = 0; commonOrder < 6; commonOrder++) {
-        int attempt = commonOrder + 1;
-        for(occurIndex = 0; occurIndex < 26; occurIndex++) {
-            if(occurences[occurIndex] >= greatest) {
-                greatest = occurences[occurIndex]; //greatest is the number of times it appears, alphabet[occurIndex] is the letter.
+    for(commonOrder = 0; commonOrder < 6; commonOrder++) {                                    //For loop for each attempt (most common letter is replaced by the 6 most common (found in 'commonLetters[6]' array)).
+        int attempt = commonOrder + 1;                                                        //Setting attempt number (for printing purposes only).
+        for(occurIndex = 0; occurIndex < 26; occurIndex++) {                                  //For loop finds most common letter
+            if(occurences[occurIndex] >= greatest) {                                          //... by comparing to the last in If statement.
+                greatest = occurences[occurIndex];                                            //Overwrites greatest and commonLetter variables where If statement is true.
                 commonLetter = alphabet[occurIndex];
             }
+            else {                                                                            //Value remains where If statement is false.                                    
+                greatest = greatest;
+                commonLetter = commonLetter;
+            }
         }
-        lShift = abs(commonLetters[commonOrder] - commonLetter);
-        for(ABIndex = 0; ABIndex < 26; ABIndex++) {
+        lShift = abs(commonLetters[commonOrder] - commonLetter);                            //Finding shift amount based on most common letter in 'commonLetters[]' array
+        for(ABIndex = 0; ABIndex < 26; ABIndex++) {                                         
             if(alphabet[ABIndex] - lShift < 65) {
                 int difference = alphabet[ABIndex] - 64;
                 int contShift = abs(lShift - difference);
@@ -368,7 +380,7 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
                 tempRotSubAB[ABIndex] = alphabet[ABIndex] - lShift;
             }
         }
-        for(REMIndex = 0; REMIndex < 1023; REMIndex++) {
+        for(REMIndex = 0; REMIndex < msgLen; REMIndex++) {
             for(ABIndex = 0; ABIndex < 26; ABIndex++) {
                 if(rotEncMsgTest[REMIndex] < 65 || rotEncMsgTest[REMIndex] > 90) {
                     tempRotDecMsg[REMIndex] = rotEncMsgTest[REMIndex];
@@ -379,10 +391,7 @@ char RotationDecryptionKeyless(char *rotEncMsgTest, char *alphabet, char *common
             }
         }
         printf("Attempt %d: \n", attempt);
-        printf("           %s \n", tempRotDecMsg);
-        //decrypt and print
-        
-        //remove letter and start for loop again
+        printf("            %s \n", tempRotDecMsg);
     }
     return 0;
 }
