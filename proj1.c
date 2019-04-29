@@ -7,7 +7,9 @@
  *      testRotEncMsg.txt:
  *          1: (message to be decrypted by rotation --> 'rotEncMsgTest')
  *      testSubAlphabet.txt:
- *          1: (Given substitution alphabet --> 'subAlphabetTest')
+ *          1: (given substitution alphabet --> 'subAlphabetTest')
+ *      testSubEncMsg.txt:
+ *          1: (message to be decrypted by substitutiton --> 'subEmcMsgTest')
  */
 
 #include <stdio.h>
@@ -24,7 +26,7 @@ char RotationDecryption(char *rotEncMsgTest, char *rotDecMsg, char *rotSubAB, ch
 
 char SubstitutionAlphabet(char *subAB);
 char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alphabet);
-char SubstitutionDecryption(char *subEncMsg,  char *subAlphabetTest, char *subDecMsg, char *alphabet);
+char SubstitutionDecryption(char *subEncMsgTest,  char *subAlphabetTest, char *subDecMsg, char *alphabet);
 
 char RotationDecryptionKeyless(char *rotEncMsg, char *alphabet, char *commonLetters);
 
@@ -73,9 +75,9 @@ int main() {
     rotSubAB[27] = RotationSubstitutionAlphabet(alphabet, rotSubAB, shift);
     subAB[27] = SubstitutionAlphabet(subAB);
     
-    //!!!!!!!!!!!!!!!!!!!!!add fscanf for encrypted messages to decrypt. make seperate strings for these.!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     char rotEncMsgTest[1023] = {0};
     char subAlphabetTest[27] = {0};
+    char subEncMsgTest[1023] = {0};
     
     FILE *testRotEncMsg;
     testRotEncMsg = fopen("testRotEncMsg.txt", "r");
@@ -94,22 +96,33 @@ int main() {
     if(filemessage == NULL) {
         perror("testSubAlphabet");
     }
+    
+    FILE *testSubEncMsg;
+    testSubEncMsg = fopen("testSubEncMsg.txt", "r");
+    if(testSubEncMsg == NULL) {
+        perror("testSubEncMsg");
+    }
    
     fseek(testRotEncMsg, 0, SEEK_END);
-    int tREMSize = ftell(testRotEncMsg);
+    int tREMSize = ftell(testRotEncMsg) + 1;
     fseek(testRotEncMsg, 0, SEEK_SET);
     
     fseek(testSubAlphabet, 0, SEEK_END);
-    int tSABSize = ftell(testSubAlphabet);
+    int tSABSize = ftell(testSubAlphabet) + 1;
     fseek(testSubAlphabet, 0, SEEK_SET);
     
     fseek(filemessage, 0, SEEK_END);
-    int fMSize = ftell(filemessage);
+    int fMSize = ftell(filemessage) + 1;
     fseek(filemessage, 0, SEEK_SET);
+    
+    fseek(testSubEncMsg, 0, SEEK_END);
+    int tSEMSize = ftell(testSubEncMsg) + 1;
+    fseek(testSubEncMsg, 0, SEEK_SET);
    
     fgets(rotEncMsgTest, tREMSize, testRotEncMsg);
     fgets(subAlphabetTest, tSABSize, testSubAlphabet);
     fgets(msg, fMSize, filemessage);
+    fgets(subEncMsgTest, tSEMSize, testSubEncMsg);
     printf("Task %d selected:\n", task);
     printf(" \n");
     
@@ -127,22 +140,32 @@ int main() {
             printf("    Encrypted Message: %s \n", rotEncMsgTest);
             printf("    Rotation key: %d.\n", shift);
             printf("    Decryption: %s\n", rotDecMsg); break;
-        case 3: printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
-            printf("             Alphabet: %s\n", alphabet);
+        case 3: printf("Substitution Cipher Encryption: \n");
             printf(" \n");
+            printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
+            printf("Alphabet:              %s\n", alphabet);
+            printf(" \n");
+            printf("Message:    %s \n", msg);
             subEncMsg[1023] = SubstitutionEncryption(msg, subAB, subEncMsg, alphabet);          //Calling substitution encryption function and saving return value to "subEncMsg" string.
-            printf("Substitution Cipher Encryption: %s\n", subEncMsg); break;                   //Printing relevant information.
-        case 4: printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
-            printf("             Alphabet: %s\n", alphabet); 
+            printf("Encryption: %s\n", subEncMsg); break;                   //Printing relevant information.
+        case 4: printf("Substitution Cipher Decryption: \n");
             printf(" \n");
-            subDecMsg[1023] = SubstitutionDecryption(subEncMsg, subAlphabetTest, subDecMsg, alphabet);    //Calling substitution decryption function and saving return value to "subDecMsg" string.
-            printf("Substitution Cipher Decryption: %s\n", subDecMsg); break;
+            printf("Substitution Alphabet: %s\n", subAB);                                   //Printing substitution alphabet.
+            printf("Alphabet:              %s\n", alphabet); 
+            printf(" \n");
+            printf("Encryption: %s \n", subEncMsgTest);
+            subDecMsg[1023] = SubstitutionDecryption(subEncMsgTest, subAlphabetTest, subDecMsg, alphabet);    //Calling substitution decryption function and saving return value to "subDecMsg" string.
+            printf("Decryption: %s \n", subDecMsg); break;
         case 5: printf("                      Encryption: %s\n", rotEncMsg);                    //Printing unseen message.
             RotationDecryptionKeyless(rotEncMsg, alphabet, commonLetters); break;               //Calling rotation decryption (keyless) function.
         case 6: printf("Sorry, option 6 is not yet available."); break;                                                                          
     }
     fclose(testRotEncMsg);
     fclose(testSubAlphabet);
+    fclose(decision);
+    fclose(filemessage);
+    fclose(testSubEncMsg);
+    
 }
 
 
@@ -284,19 +307,19 @@ char SubstitutionEncryption(char *msg, char *subAB, char *subEncMsg, char *alpha
  *      The decrypted message is returned to the string 'subDecMsg'.
  */
 
-char SubstitutionDecryption(char *subEncMsg,  char *subAlphabetTest, char *subDecMsg, char *alphabet) {
+char SubstitutionDecryption(char *subEncMsgTest,  char *subAlphabetTest, char *subDecMsg, char *alphabet) {
     int SubEncMsgIndex, subABIndex, msgLen = 1023;                                               //Declaring Substitution Encryption Message and Substitution Alphabet indices. Initialising Message Length.
     for(SubEncMsgIndex = 0; SubEncMsgIndex < msgLen; SubEncMsgIndex++) {                         
-        if(subEncMsg[SubEncMsgIndex] > 96 && subEncMsg[SubEncMsgIndex] < 123) {                  
-            subEncMsg[SubEncMsgIndex] = subEncMsg[SubEncMsgIndex] - 32;
+        if(subEncMsgTest[SubEncMsgIndex] > 96 && subEncMsgTest[SubEncMsgIndex] < 123) {                  
+            subEncMsgTest[SubEncMsgIndex] = subEncMsgTest[SubEncMsgIndex] - 32;
         }
     }
     for(SubEncMsgIndex = 0; SubEncMsgIndex < msgLen; SubEncMsgIndex++) {                         //For loop for substitution decryption. Goes through each character of the encrypted message.
            for(subABIndex = 0; subABIndex < 26; subABIndex++) {                                  //... For each encrypted message character, each character of substitution alphabet is compared to later test if it matches.
-               if(subEncMsg[SubEncMsgIndex] < 65 || subEncMsg[SubEncMsgIndex] > 90) {            //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
-                   subDecMsg[SubEncMsgIndex] = subEncMsg[SubEncMsgIndex];                        //... where true.
+               if(subEncMsgTest[SubEncMsgIndex] < 65 || subEncMsgTest[SubEncMsgIndex] > 90) {            //If statement checks if the letter is not within range of A-Z, keeping the value at any index where
+                   subDecMsg[SubEncMsgIndex] = subEncMsgTest[SubEncMsgIndex];                        //... where true.
                }
-               else if(subEncMsg[SubEncMsgIndex] == subAlphabetTest[subABIndex]) {                         //Else If statement checks if encrypted message character matches substitution alphabet character.
+               else if(subEncMsgTest[SubEncMsgIndex] == subAlphabetTest[subABIndex]) {                         //Else If statement checks if encrypted message character matches substitution alphabet character.
                    subDecMsg[SubEncMsgIndex] = alphabet[subABIndex];                             //... Where true, message character is replaced with substitution alphabet character.
                }
            }   
